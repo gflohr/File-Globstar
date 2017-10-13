@@ -1,0 +1,12 @@
+=head 1 NAME
+
+File::Globstar - Globbing With Double Asterisk Expansion
+
+=head1 COPYRIGHT
+
+Copyright (C) 2016-2017 Guido Flohr <guido.flohr@cantanea.com>,
+all rights reserved.
+
+=head1 SEE ALSO
+
+glob(3), fnmatch(3), glob(1), perl(1)
