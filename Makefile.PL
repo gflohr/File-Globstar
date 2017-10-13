@@ -19,7 +19,16 @@ my %WriteMakefileArgs = (
   "DISTNAME" => "File-Globstar",
   "LICENSE" => "artistic_2",
   "NAME" => "File::Globstar",
-  "PREREQ_PM" => {},
+  "PREREQ_PM" => {
+    "Exporter" => 0,
+    "File::Find" => 0,
+    "base" => 0,
+    "strict" => 0,
+    "vars" => 0
+  },
+  "TEST_REQUIRES" => {
+    "Test::More" => 0
+  },
   "VERSION" => "0.1",
   "test" => {
     "TESTS" => "t/*.t"
@@ -28,7 +37,13 @@ my %WriteMakefileArgs = (
 
 
 my %FallbackPrereqs = (
-  "Module::Build" => "0.28"
+  "Exporter" => 0,
+  "File::Find" => 0,
+  "Module::Build" => "0.28",
+  "Test::More" => 0,
+  "base" => 0,
+  "strict" => 0,
+  "vars" => 0
 );
 
 

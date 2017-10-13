@@ -22,12 +22,23 @@ my %module_build_args = (
   "dist_version" => "0.1",
   "license" => "artistic_2",
   "module_name" => "File::Globstar",
-  "recursive_test_files" => 1
+  "recursive_test_files" => 1,
+  "requires" => {
+    "Exporter" => 0,
+    "File::Find" => 0,
+    "base" => 0,
+    "strict" => 0,
+    "vars" => 0
+  },
+  "test_requires" => {
+    "Test::More" => 0
+  }
 );
 
 
 my %fallback_build_requires = (
-  "Module::Build" => "0.28"
+  "Module::Build" => "0.28",
+  "Test::More" => 0
 );
 
 

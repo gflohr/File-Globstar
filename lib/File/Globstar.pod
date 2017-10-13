@@ -1,4 +1,4 @@
-=head 1 NAME
+=head1 NAME
 
 File::Globstar - Globbing With Double Asterisk Expansion
 
