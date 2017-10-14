@@ -17,7 +17,7 @@ use File::Find;
 
 use base 'Exporter';
 use vars qw(@EXPORT_OK);
-@EXPORT_OK = qw(globstar);
+@EXPORT_OK = qw(globstar fnmatchstar transpile);
 
 sub _globstar($$;$);
 
@@ -190,6 +190,55 @@ sub globstar($;$) {
     }
 
     return keys %found;
+}
+
+sub transpile($) {
+    my ($pattern) = @_;
+
+    $pattern =~ s
+                {
+                    (.*?)               # Anything, followed by ...
+                    (  
+                       \\.              # escaped character
+                    |                   # or
+                       \A\*\*(?=/)      # leading **/
+                    |                   # or
+                       /\*\*(?=/|\z)    # /**/ or /** at end of string
+                    |                   # or
+                       \.               # a dot
+                    |                   # or
+                       \*               # an asterisk
+                    |
+                    )?
+                }{
+                    my $translated = quotemeta $1;
+                    if ('\\' eq substr $2, 0, 1) {
+                        $translated .= quotemeta substr $2, 1, 1;
+                    } elsif ('**' eq $2) {
+                        $translated .= '.*';
+                    } elsif ('/**' eq $2) {
+                        $translated .= '/.*';
+                    } elsif ('.' eq $2) {
+                        $translated .= '\\.';
+                    } elsif ('*' eq $2) {
+                        $translated .= '[^/]*';
+                    } elsif (length $2) {
+                        die $2; 
+                    }
+                    $translated;
+                }gsex;
+
+    return qr/^$pattern$/;
+}
+
+sub fnmatchstar($$) {
+    my ($pattern, $string) = @_;
+
+    $pattern = transpile $pattern;
+
+    $string =~ $pattern or return;
+
+    return 1;
 }
 
 1;
