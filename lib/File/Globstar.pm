@@ -209,6 +209,7 @@ sub transpile($) {
                     |                   # or
                        \*               # an asterisk
                     |
+                       \?               # a question mark
                     )?
                 }{
                     my $translated = quotemeta $1;
@@ -222,6 +223,8 @@ sub transpile($) {
                         $translated .= '\\.';
                     } elsif ('*' eq $2) {
                         $translated .= '[^/]*';
+                    } elsif ('?' eq $2) {
+                        $translated .= '[^/]';
                     } elsif (length $2) {
                         die $2; 
                     }

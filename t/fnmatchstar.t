@@ -20,6 +20,8 @@ my @tests = (
     ['**/baz', 'foo/bar/baz', 1, 'leading double asterisk'],
     ['foo/**/baz', 'foo/bar/bar/bar/bar/baz', 1, 'double asterisk'],
     ['foo/**', 'foo/bar/bar/bar/bar/baz', 1, 'trailing double asterisk'],
+    ['foo/b?r', 'foo/bar', 1, 'question mark'],
+    ['foo?bar', 'foo/bar', 0, 'question mark matched slash'],
 );
 
 foreach my $test (@tests) {
