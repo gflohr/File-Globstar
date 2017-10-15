@@ -10,7 +10,7 @@ use Test::More;
 
 use File::Globstar qw(fnmatchstar);
 
-# Testcs are defined as: PATTERN, STRING, EXPECT, TESTNAME
+# Tests are defined as: PATTERN, STRING, EXPECT, TESTNAME
 # EXPECT and TESTNAME are optional.
 my @tests = (
     ['foobar', 'foobar', 1, 'regular match'],
@@ -18,6 +18,8 @@ my @tests = (
     ['*bar', 'foobar', 1, 'asterisk'],
     ['*bar', 'foo/bar', 0, 'slash matched asterisk'],
     ['**/baz', 'foo/bar/baz', 1, 'leading double asterisk'],
+    ['foo/**/baz', 'foo/bar/bar/bar/bar/baz', 1, 'double asterisk'],
+    ['foo/**', 'foo/bar/bar/bar/bar/baz', 1, 'trailing double asterisk'],
 );
 
 foreach my $test (@tests) {
