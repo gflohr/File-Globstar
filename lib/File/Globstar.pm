@@ -174,6 +174,13 @@ sub _globstar($$;$) {
 sub globstar($;$) {
     my ($pattern, $flags) = @_;
 
+    # The double asterisk can only be used in place of a directory.
+    # It is illegal everywhere else.
+    my @parts = split /\//, $pattern;
+    foreach my $part (@parts) {
+        $part ne '**' and 0 <= index $part, '**' and return;
+    }
+
     return _globstar $pattern, '', $flags;
 }
 
