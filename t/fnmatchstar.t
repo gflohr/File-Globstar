@@ -25,6 +25,11 @@ my @tests = (
     ['foo?bar', 'foo/bar', 0, 'question mark matched slash'],
     ['foob[abc]r', 'foobar', 1, 'simple range'],
     ['foo[]bar', 'foo[]bar', 1, 'empty range not ignored'],
+    ['foob[a-c]r', 'foobar', 1, 'beginning of ranged not matched'],
+    ['foo[a-c]ar', 'foobar', 1, 'inner characters of ranged not matched'],
+    ['fo[a-o]bar', 'foobar', 1, 'end of ranged not matched'],
+    ['fo[!n-p]bar', 'foobar', 0, 'negated range matched'],
+    ['fo[!a-np-z]bar', 'foobar', 1, 'negated range did not match'],
 );
 
 foreach my $test (@tests) {
