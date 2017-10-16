@@ -17,7 +17,7 @@ use File::Find;
 
 use base 'Exporter';
 use vars qw(@EXPORT_OK);
-@EXPORT_OK = qw(globstar fnmatchstar transpile);
+@EXPORT_OK = qw(globstar fnmatchstar translatestar);
 
 sub _globstar($$;$);
 
@@ -203,7 +203,7 @@ sub _transpile_range($) {
     return "[$range]";
 }
 
-sub transpile($;$) {
+sub translatestar($;$) {
     my ($pattern, $ignore_case) = @_;
 
     $pattern =~ s
@@ -269,7 +269,7 @@ sub transpile($;$) {
 sub fnmatchstar($$;$) {
     my ($pattern, $string, $ignore_case) = @_;
 
-    my $transpiled = eval { transpile $pattern, $ignore_case };
+    my $transpiled = eval { translatestar $pattern, $ignore_case };
     if ($@) {
         if ($ignore_case) {
             lc $pattern eq lc $string or return;
