@@ -9,4 +9,4 @@ all rights reserved.
 
 =head1 SEE ALSO
 
-glob(3), fnmatch(3), glob(1), perl(1)
+glob(3), glob(7), fnmatch(3), glob(1), perl(1)

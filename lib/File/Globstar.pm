@@ -192,8 +192,8 @@ sub globstar($;$) {
     return keys %found;
 }
 
-sub transpile($) {
-    my ($pattern) = @_;
+sub transpile($;$) {
+    my ($pattern, $ignore_case) = @_;
 
     $pattern =~ s
                 {
@@ -231,13 +231,13 @@ sub transpile($) {
                     $translated;
                 }gsex;
 
-    return qr/^$pattern$/;
+    return $ignore_case ? qr/^$pattern$/i : qr/^$pattern$/;
 }
 
-sub fnmatchstar($$) {
-    my ($pattern, $string) = @_;
+sub fnmatchstar($$;$) {
+    my ($pattern, $string, $ignore_case) = @_;
 
-    $pattern = transpile $pattern;
+    $pattern = transpile $pattern, $ignore_case;
 
     $string =~ $pattern or return;
 

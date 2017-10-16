@@ -30,4 +30,7 @@ foreach my $test (@tests) {
    ok $got ^ !$expect, $name;
 }
 
-done_testing(scalar @tests);
+ok fnmatchstar 'foobar', 'fOobAr', 1;
+ok !fnmatchstar 'foobar', 'fOobAr', 0;
+
+done_testing(2 + scalar @tests);
