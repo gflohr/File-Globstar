@@ -5,7 +5,35 @@ This library implements globbing with support for "**" in Perl.
 Two consecutive asterisks stand for all files and directories in the
 current directory and all of its descendants.
 
-See [lib/File/Globstar.pod](File::Globstar) for more details.
+See [File::Globstar](https://github.com/gflohr/File-Globstar/blob/master/lib/File/Globstar.pod) for more information.
+
+## Installation
+
+Via CPAN:
+
+```
+$ perl -MCPAN -e install 'File::Globstar'
+```
+
+From source:
+
+```
+$ perl Build.PL
+Created MYMETA.yml and MYMETA.json
+Creating new 'Build' script for 'File-Globstar' version '0.1'
+$ ./Build
+$ ./Build install
+```
+
+From source with "make":
+
+```
+$ git clone https://github.com/gflohr/File-Globstar.git
+$ cd File-Globstar
+$ perl Makefile.PL
+$ make
+$ make install
+```
 
 ## Bugs
 
