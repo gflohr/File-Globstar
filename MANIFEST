@@ -16,6 +16,8 @@ t/author-pod-coverage.t
 t/author-pod-syntax.t
 t/fnmatchstar.t
 t/globstar.t
+t/globstar/***.empty
+t/globstar/***/empty
 t/globstar/first/one.empty
 t/globstar/first/second/one.empty
 t/globstar/first/second/third/one.empty

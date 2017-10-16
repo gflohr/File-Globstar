@@ -1,0 +1,162 @@
+=for Pod::Coverage empty
+
+=head1 NAME
+
+File::Globstar::ListMatch - List File Names Against List Of Patterns
+
+=head1 SYNOPSIS
+
+    use File::Globstar::ListMatch;
+
+    # Parse from file.
+    $matcher = File::Globstar::ListMatch('.gitignore', 
+                                         directory => 'path/to/repo',
+                                         ignoreCase => 1);
+
+    # Parse from file handle.
+    $matcher = File::Globstar::ListMatch(STDIN, ignoreCase => 0);
+
+    # Parse list of patterns.  Comments and blank lines are not
+    # stripped!
+    $matcher = File::Globstar::ListMatch([
+        'src/**/*.o',
+        '.*',
+        '!.gitignore'
+    ], case => 1);
+
+    # Parse string.
+    $patterns = <<EOF;
+    # Ignore all compiled object files.
+    src/**/*.o
+
+    # Ignore all hidden files.
+    '.*'
+    # But not this one.
+    '.gitignore'
+    EOF
+    $matcher = File::Globstar::ListMatch(\$pattern);
+
+    $filename = 'path/to/hello.o';
+    if ($matcher->match($filename)) {
+        print "Ignore '$filename'.\n";
+    }
+
+=head1 DESCRIPTION
+
+Files containing list of files are very common to command-line options such
+like "--ignore", "--exclude" or "--include".  A well-known example is the 
+syntax used by L<https://git-scm.com/|git> as described in
+L<https://git-scm.com/docs/gitignore>.
+
+This module implements this functionality in Perl.
+
+=head2 INPUT FILE FORMAT
+
+Unless you pass a reference to an array of patterns as input, comments and 
+blank lines are discarded.
+
+=over 4
+
+=item B<Comments>
+
+Comments are lines that start with a hash-sign.  Escape hash-signs that are
+part of the pattern with a backslash: "\#".
+
+=item B<Blank Lines>
+
+Blank lines are empty lines or lines consisting of whitepace only.  Whitespace
+is a sequence of US-ASCII whitespace characters, that is horizontal tabs 
+(ASCII 9), line  feeds (ASCII 10), vertical tabs (ASCII 11), form feeds
+(ASCII 12), carriage returns (ASCII 13), and space (ASCII 32).  Other
+characters with the Unicode property "WSpace=Y" are not considered whitespace.
+
+=back
+
+Leading whitespace (see above) is I<not> removed!  Likewise, whitespace between
+the leading negation "!" and the pattern is not removed!  On the other hand,
+in order to ignore a file named "   " you have to backslash-escape
+the first space character ("\   ").  Otherwise, the pattern will be interpreted
+as a blank line and ignored.  This is consistent with the behavior of Git.
+
+=head2 PATTERNS
+
+Patterns recognized by this module are always interpreted relative to the
+base directory of the list matcher.  Things you should know about this are:
+
+=over 4
+
+=item B<A leading slash is stripped off>
+
+But the pattern must match the entire significant path.  If you match 
+relative to the current directory (F<.>), "/foobar" matches 
+F<./foobar> but not F<./sub/foobar> and not F<./sub/sub/foobar>.
+
+=item B<A trailing slash is stripped off>
+
+But the pattern can only match directories.  This is why the method
+B<match()> below has an optional second argument.
+
+FIXME: How do we find out
+whether a directory that has been removed was a directory?
+
+=back 
+
+=head1 METHODS
+
+=over 4
+
+=item B<new INPUT[, %OPTIONS]>
+
+Creates a new B<File::Globstar::ListMatch> object.  B<INPUT> can be:
+
+=over 8
+
+=item B<FILE>
+
+B<FILE> can be a filename, an open file handle, or a reference to an open
+file handle.
+
+=item B<STRINGREF>
+
+B<STRINGREF> is a reference to a string containing the patterns.
+
+=item B<CODEREF>
+
+B<CODEREF> is obtained from calling the subroutine until it returns an
+empty or undefined string.
+
+=item B<ARRAYREF>
+
+You can also pass a list of patterns as an array reference.  Leading
+exclamation marks ("!") followed by possible whitespace for negating patterns
+are stripped off, but otherwise all patterns are taken as is.
+
+=back
+
+The input source can be followed by optional named arguments passed as
+key-value pairs:
+
+=over 4
+
+=item B<directory => DIRECTORY>
+
+Match relative to B<DIRECTORY>.  If omitted or empty, the current directory '/'
+is used.  
+
+=item B<ignoreCase => [0|1|undef]>
+
+Match 
+
+=back
+
+=back
+
+=head1 COPYRIGHT
+
+Copyright (C) 2016-2017 Guido Flohr <guido.flohr@cantanea.com>,
+all rights reserved.
+
+=head1 SEE ALSO
+
+File::Globstar(3pm), File::Glob(3pm), glob(3), glob(7), fnmatch(3), glob(1), 
+perl(1)

@@ -1,3 +1,5 @@
+=for Pod::Coverage empty
+
 =head1 NAME
 
 File::Globstar - Globbing With Double Asterisk Expansion
