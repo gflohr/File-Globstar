@@ -192,6 +192,27 @@ sub globstar($;$) {
     return keys %found;
 }
 
+sub _transpile_range($) {
+    my ($range) = @_;
+
+    # Strip-off enclosing brackets.
+    $range = substr $range, 1, -2 + length $range;
+
+    # Replace leading exclamation mark with caret.
+    $range =~ s/^!/^/;
+    
+    $range =~ s
+              {
+                  (.*?)                 # Anything, followed by ...
+              }
+              {
+                  my $translated = $1;
+                  $translated;
+              }gsex;
+
+    return "[$range]";
+}
+
 sub transpile($;$) {
     my ($pattern, $ignore_case) = @_;
 
@@ -210,6 +231,14 @@ sub transpile($;$) {
                        \*               # an asterisk
                     |
                        \?               # a question mark
+                    |
+                       \[               # opening bracket
+                       (?:
+                       \\.              # escaped character
+                       |
+                       [^\\\]]+         # non-backslash or closing bracket
+                       )+
+                       \]
                     )?
                 }{
                     my $translated = quotemeta $1;
@@ -225,8 +254,10 @@ sub transpile($;$) {
                         $translated .= '[^/]*';
                     } elsif ('?' eq $2) {
                         $translated .= '[^/]';
+                    } elsif ('[' eq substr $2, 0, 1) {
+                        $translated .= _transpile_range $2;
                     } elsif (length $2) {
-                        die $2; 
+                        die "should not happen: $2"; 
                     }
                     $translated;
                 }gsex;

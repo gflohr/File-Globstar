@@ -8,7 +8,7 @@ use strict;
 
 use Test::More;
 
-use File::Globstar qw(fnmatchstar);
+use File::Globstar qw(fnmatchstar transpile);
 
 # Tests are defined as: PATTERN, STRING, EXPECT, TESTNAME
 # EXPECT and TESTNAME are optional.
@@ -22,11 +22,15 @@ my @tests = (
     ['foo/**', 'foo/bar/bar/bar/bar/baz', 1, 'trailing double asterisk'],
     ['foo/b?r', 'foo/bar', 1, 'question mark'],
     ['foo?bar', 'foo/bar', 0, 'question mark matched slash'],
+    ['foob[abc]r', 'foobar', 1, 'simple range'],
+    ['foo[]bar', 'foo[]bar', 1, 'empty range not ignored'],
 );
 
 foreach my $test (@tests) {
    my ($pattern, $string, $expect, $name) = @$test;
    my $got = fnmatchstar $pattern, $string;
+   $name = '' if !defined $name;
+   $name .= " (pattern '$pattern' -> " . transpile $pattern . ")";
    ok $got ^ !$expect, $name;
 }
 
