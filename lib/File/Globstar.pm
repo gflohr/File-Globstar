@@ -174,22 +174,7 @@ sub _globstar($$;$) {
 sub globstar($;$) {
     my ($pattern, $flags) = @_;
 
-    if (!ref $pattern || 'ARRAY' ne reftype $pattern) {
-        return _globstar $pattern, '', $flags;
-    }
-
-    my %found;
-    foreach (@$pattern) {
-        my $p = $_;
-        if ($p =~ s/^![ \x09-\x0d]*//) {
-            my @found = _globstar $p, '', $flags;
-            delete $found{$_} foreach _globstar $p, '', $flags;
-        } else {
-            $found{$_} = 1 foreach _globstar $p, '', $flags;
-        }
-    }
-
-    return keys %found;
+    return _globstar $pattern, '', $flags;
 }
 
 sub _transpile_range($) {

@@ -6,7 +6,7 @@
 
 use strict;
 
-use Test::More tests => 9;
+use Test::More tests => 8;
 
 use File::Globstar qw(globstar);
 
@@ -97,15 +97,3 @@ is_deeply [sort @files],
                three.empty
                two.empty
               )];
-
-@files = globstar ['first/**/*.empty', '!first/**/t*.*', 'first/**/three.*'];
-is_deeply [sort @files],
-          [qw (
-               first/one.empty
-               first/second/one.empty
-               first/second/third/one.empty
-               first/second/third/three.empty
-               first/second/three.empty
-               first/three.empty
-              )];
-
