@@ -1,6 +1,11 @@
 # File-Globstar
 
-Perl Globstar (glob with double asterisk semantics)
+This library implements globbing with support for "**" in Perl.
+
+Two consecutive asterisks stand for all files and directories in the
+current directory and all of its descendants.
+
+See [lib/File/Globstar.pod](File::Globstar) for more details.
 
 ## Bugs
 
