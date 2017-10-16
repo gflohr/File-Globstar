@@ -193,7 +193,8 @@ sub _transpile_range($) {
     # Replace leading exclamation mark with caret.
     $range =~ s/^!/^/;
 
-    # FIXME! Escape backslashes? Probably yes ...
+    # Backslashes escape inside Perl ranges but not in ours.  Escape them:
+    $range =~ s/\\/\\\\/g;
 
     # Quote dots and equal sign to prevent Perl from interpreting 
     # equivalence and collating classes.

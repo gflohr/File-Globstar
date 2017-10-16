@@ -38,6 +38,8 @@ my @tests = (
     ['foo[[=a=]bar', 'foo=bar', 1, 'equivalence class #2'],
     ['foo[[.a.]]bar', 'foo.bar', 0, ' collating class #1'],
     ['foo[[.a.]bar', 'foo.bar', 1, 'collating class #2'],
+    ['foo[[.a.]bar', 'foo.bar', 1, 'collating class #2'],
+    ['foo[ab\\xy]bar', 'foo\\bar', 1, 'backslash inside range'],
 );
 
 foreach my $test (@tests) {
