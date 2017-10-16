@@ -226,6 +226,10 @@ sub transpile($;$) {
                     |                   # or
                        /\*\*(?=/|\z)    # /**/ or /** at end of string
                     |                   # or
+                      \*\*.             # invalid
+                    |                   # or
+                      .\*\*             # invalid
+                    |                   # or
                        \.               # a dot
                     |                   # or
                        \*               # an asterisk
@@ -257,6 +261,9 @@ sub transpile($;$) {
                     } elsif ('[' eq substr $2, 0, 1) {
                         $translated .= _transpile_range $2;
                     } elsif (length $2) {
+                        if ($2 =~ /\*\*/) {
+                            die "invalid use of double asterisk";
+                        }
                         die "should not happen: $2"; 
                     }
                     $translated;
@@ -268,9 +275,18 @@ sub transpile($;$) {
 sub fnmatchstar($$;$) {
     my ($pattern, $string, $ignore_case) = @_;
 
-    $pattern = transpile $pattern, $ignore_case;
+    my $transpiled = eval { transpile $pattern, $ignore_case };
+    if ($@) {
+        if ($ignore_case) {
+            lc $pattern eq lc $string or return;
+        } else {
+            $pattern eq $string or return;
+        }
 
-    $string =~ $pattern or return;
+        return 1;
+    }
+
+    $string =~ $transpiled or return;
 
     return 1;
 }

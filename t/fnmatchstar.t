@@ -20,6 +20,7 @@ my @tests = (
     ['**/baz', 'foo/bar/baz', 1, 'leading double asterisk'],
     ['foo/**/baz', 'foo/bar/bar/bar/bar/baz', 1, 'double asterisk'],
     ['foo/**', 'foo/bar/bar/bar/bar/baz', 1, 'trailing double asterisk'],
+    ['foo/b***ar', 'foo/b***ar', undef, 'three asterisks are not allowed'],
     ['foo/b?r', 'foo/bar', 1, 'question mark'],
     ['foo?bar', 'foo/bar', 0, 'question mark matched slash'],
     ['foob[abc]r', 'foobar', 1, 'simple range'],
@@ -30,8 +31,18 @@ foreach my $test (@tests) {
    my ($pattern, $string, $expect, $name) = @$test;
    my $got = fnmatchstar $pattern, $string;
    $name = '' if !defined $name;
-   $name .= " (pattern '$pattern' -> " . transpile $pattern . ")";
-   ok $got ^ !$expect, $name;
+   my $transpiled = eval { transpile $pattern };
+   my $x = $@;
+   $transpiled = '[exception thrown]' if defined $x;
+
+   $name .= " (pattern '$pattern' -> '$transpiled')";
+   if (defined $expect) {
+       ok $got ^ !$expect, $name;
+   } else {
+       $name = $test->[-1];
+       $name .= " (pattern '$pattern': no exception was thrown)";
+       ok $x, $name;
+   }
 }
 
 ok fnmatchstar 'foobar', 'fOobAr', 1;
