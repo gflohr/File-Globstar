@@ -30,6 +30,14 @@ my @tests = (
     ['fo[a-o]bar', 'foobar', 1, 'end of ranged not matched'],
     ['fo[!n-p]bar', 'foobar', 0, 'negated range matched'],
     ['fo[!a-np-z]bar', 'foobar', 1, 'negated range did not match'],
+    ['foo[-xzy]bar', 'foo-bar', 1, 'leading hyphen did not work'],
+    ['foo[xzy-]bar', 'foo-bar', 1, 'trailing hyphen did not work'],
+    ['foo[]xyz]bar', 'foo]bar', 1, 'closing bracket not allowed as first range char'],
+    ['foo[[:lower:]]ar', 'foobar', 1, 'character class did not work'],
+    ['foo[[=a=]]bar', 'foo=bar', 0, 'equivalence class #1'],
+    ['foo[[=a=]bar', 'foo=bar', 1, 'equivalence class #2'],
+    ['foo[[.a.]]bar', 'foo.bar', 0, ' collating class #1'],
+    ['foo[[.a.]bar', 'foo.bar', 1, 'collating class #2'],
 );
 
 foreach my $test (@tests) {
@@ -38,7 +46,7 @@ foreach my $test (@tests) {
    $name = '' if !defined $name;
    my $transpiled = eval { transpile $pattern };
    my $x = $@;
-   $transpiled = '[exception thrown]' if defined $x;
+   $transpiled = "[exception thrown: $x]" if defined $x;
 
    $name .= " (pattern '$pattern' -> '$transpiled')";
    if (defined $expect) {

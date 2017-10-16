@@ -192,6 +192,11 @@ sub _transpile_range($) {
 
     # Replace leading exclamation mark with caret.
     $range =~ s/^!/^/;
+
+    # Quote dots and equal sign to prevent Perl from interpreting 
+    # equivalence and collating classes.
+    $range =~ s/\./\\\./g;
+    $range =~ s/\=/\\\=/g;
     
     $range =~ s
               {
@@ -229,8 +234,12 @@ sub transpile($;$) {
                        \?               # a question mark
                     |
                        \[               # opening bracket
+                       !?
+                       \]?              # possible (literal) closing bracket
                        (?:
                        \\.              # escaped character
+                       |
+                       \[:[a-z]+:\]     # character class
                        |
                        [^\\\]]+         # non-backslash or closing bracket
                        )+
