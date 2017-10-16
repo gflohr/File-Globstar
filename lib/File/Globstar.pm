@@ -193,20 +193,13 @@ sub _transpile_range($) {
     # Replace leading exclamation mark with caret.
     $range =~ s/^!/^/;
 
+    # FIXME! Escape backslashes? Probably yes ...
+
     # Quote dots and equal sign to prevent Perl from interpreting 
     # equivalence and collating classes.
     $range =~ s/\./\\\./g;
     $range =~ s/\=/\\\=/g;
     
-    $range =~ s
-              {
-                  (.*?)                 # Anything, followed by ...
-              }
-              {
-                  my $translated = $1;
-                  $translated;
-              }gsex;
-
     return "[$range]";
 }
 
