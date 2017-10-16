@@ -8,7 +8,7 @@ use strict;
 
 use Test::More;
 
-use File::Globstar qw(fnmatchstar transpile);
+use File::Globstar qw(fnmatchstar translatestar);
 
 # Tests are defined as: PATTERN, STRING, EXPECT, TESTNAME
 # EXPECT and TESTNAME are optional.
@@ -44,11 +44,12 @@ foreach my $test (@tests) {
    my ($pattern, $string, $expect, $name) = @$test;
    my $got = fnmatchstar $pattern, $string;
    $name = '' if !defined $name;
-   my $transpiled = eval { transpile $pattern };
+   my $translated = eval { translatestar $pattern };
+   warn $@ if $@;
    my $x = $@;
-   $transpiled = "[exception thrown: $x]" if defined $x;
+   $translated = "[exception thrown: $x]" if defined $x;
 
-   $name .= " (pattern '$pattern' -> '$transpiled')";
+   $name .= " (pattern '$pattern' -> '$translated')";
    if (defined $expect) {
        ok $got ^ !$expect, $name;
    } else {
