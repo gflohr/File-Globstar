@@ -12,6 +12,14 @@ ok require File::Globstar::ListMatch;
 
 my ($matcher, $input, @patterns);
 
+$input = [qw (Tom Dick Harry)];
+$matcher = File::Globstar::ListMatch->new($input);
+is_deeply [$matcher->patterns], [
+    qr{^Tom$},
+    qr{^Dick$},
+    qr{^Harry$},
+], 'array input';
+
 $input = <<EOF;
 FooBar
 BarBaz

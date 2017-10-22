@@ -27,7 +27,7 @@ sub new {
         if ('SCALAR' eq $type) {
            $self->_readString($$input);
         } elsif ('ARRAY' eq $type) {
-           die "array\n";
+           $self->_readArray($input);
         } else {
            die "reference to file handle\n";
         }
@@ -44,14 +44,14 @@ sub patterns {
     return @{shift->{__patterns}};
 }
 
-sub _readString {
-    my ($self, $string) = @_;
+sub _readArray {
+    my ($self, $lines) = @_;
 
     my @patterns;
     $self->{__patterns} = \@patterns;
 
     my $ignore_case = $self->{__ignoreCase};
-    foreach my $line (split /\n/, $string) {
+    foreach my $line (@$lines) {
         my $transpiled = eval { translatestar $line, $ignore_case };
         if ($@) {
             $transpiled = quotemeta $line;
@@ -65,6 +65,19 @@ sub _readString {
         }
     }
 
+    return $self;
+}
+
+sub _readString {
+    my ($self, $string) = @_;
+
+    my @lines;
+    foreach my $line (split /\n/, $string) {
+        push @lines, $line;
+    }
+
+    $self->_readArray(\@lines);
+    
     return $self;
 }
 
