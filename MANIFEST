@@ -10,6 +10,8 @@ README.pod
 dist.ini
 lib/File/Globstar.pm
 lib/File/Globstar.pod
+lib/File/Globstar/ListMatch.pm
+lib/File/Globstar/ListMatch.pod
 perlcritic.rc
 t/author-critic.t
 t/author-pod-coverage.t
@@ -30,4 +32,6 @@ t/globstar/first/two.empty
 t/globstar/one.empty
 t/globstar/three.empty
 t/globstar/two.empty
+t/listmatch.t
+t/patterns
 t/release-cpan-changes.t
