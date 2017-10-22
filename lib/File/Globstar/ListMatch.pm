@@ -74,6 +74,8 @@ sub _readString {
     my @lines;
     foreach my $line (split /\n/, $string) {
         next if $line =~ /^#/;
+        next if $line =~ /^[\x{9}-\x{13} ]*$/;
+
         push @lines, $line;
     }
 

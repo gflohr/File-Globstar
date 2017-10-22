@@ -43,4 +43,18 @@ is_deeply [$matcher->patterns], [
     qr{^BarBaz$}
 ], 'discard comments';
 
+my $whitespace = "\x09\x0a\x0b\x0c\x0d ";
+$input = <<EOF;
+
+FooBar
+$whitespace
+BarBaz
+$whitespace$whitespace
+EOF
+$matcher = File::Globstar::ListMatch->new(\$input);
+is_deeply [$matcher->patterns], [
+    qr{^FooBar$},
+    qr{^BarBaz$}
+], 'discard empty lines';
+
 done_testing;
