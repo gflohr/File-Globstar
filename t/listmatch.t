@@ -43,7 +43,9 @@ is_deeply [$matcher->patterns], [
     qr{^BarBaz$}
 ], 'discard comments';
 
-my $whitespace = "\x09\x0a\x0b\x0c\x0d ";
+my $space = ' ';
+my $whitespace = "\x09\x0a\x0b\x0c\x0d$space";
+
 $input = <<EOF;
 
 FooBar
@@ -56,5 +58,31 @@ is_deeply [$matcher->patterns], [
     qr{^FooBar$},
     qr{^BarBaz$}
 ], 'discard empty lines';
+
+$input = <<EOF;
+foo\\bar
+foo\\\\bar
+EOF
+$matcher = File::Globstar::ListMatch->new(\$input);
+is_deeply [$matcher->patterns], [
+    qr{^foobar$},
+    qr{^foo\\bar$}
+], 'backslash escape regular characters';
+
+$input = <<EOF;
+trailing space$whitespace
+escaped space\\$space
+not escaped space\\\\$space
+escaped space again\\\\\\\\\\$space$whitespace
+\\$space
+EOF
+$matcher = File::Globstar::ListMatch->new(\$input);
+is_deeply [$matcher->patterns], [
+    qr{^trailing\ space$},
+    qr{^escaped\ space\ $},
+    qr{^not\ escaped\ space\\$},
+    qr{^escaped\ space\ again\\\\\ $},
+    qr{^\ $},
+], 'trailing whitespace';
 
 done_testing;

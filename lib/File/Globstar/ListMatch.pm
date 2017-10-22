@@ -74,7 +74,22 @@ sub _readString {
     my @lines;
     foreach my $line (split /\n/, $string) {
         next if $line =~ /^#/;
-        next if $line =~ /^[\x{9}-\x{13} ]*$/;
+
+        # If the string contains trailing whitespace we have to count the
+        # number of backslashes in front of the first whitespace character.
+        if ($line =~ s/(\\*)([\x{9}-\x{13} ])[\x{9}-\x{13} ]*$//) {
+            my ($bs, $first) = ($1, $2);
+            if ($bs) {
+                $line .= $bs;
+
+                my $num_bs = $bs =~ y/\\/\\/;
+
+                # If the number of backslashes is odd, the last space was
+                # escaped.
+                $line .= $first if $num_bs & 1;
+            }
+        }
+        next if '' eq $line;
 
         push @lines, $line;
     }
