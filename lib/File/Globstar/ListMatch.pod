@@ -10,7 +10,8 @@ File::Globstar::ListMatch - List File Names Against List Of Patterns
 
     # Parse from file.
     $matcher = File::Globstar::ListMatch('.gitignore', 
-                                         ignoreCase => 1);
+                                         ignoreCase => 1,
+                                         isExclude => 1);
 
     # Parse from file handle.
     $matcher = File::Globstar::ListMatch(STDIN, ignoreCase => 0);
@@ -21,7 +22,7 @@ File::Globstar::ListMatch - List File Names Against List Of Patterns
         'src/**/*.o',
         '.*',
         '!.gitignore'
-    ], case => 1);
+    ]);
 
     # Parse string.
     $patterns = <<EOF;
@@ -176,7 +177,7 @@ You should also keep in mind that a directory tree may span multiple file
 systems.  Probably the best solution is to document that problem in the docs
 of your application.
 
-=item B<isIgnore =E<gt> TRUE|FALSE>
+=item B<isExclude =E<gt> TRUE|FALSE>
 
 If the pattern list is used for ignoring or excluding files, not all patterns
 can be negated.  The second line in the following input file would be
@@ -216,7 +217,8 @@ after the last (non-trailing) slash is taken into account.
 
 =item B<patterns>
 
-Returns the patterns as a list.  This is useful probably only for testing.
+Returns the patterns as a list of compiled regular expressions.  This is 
+useful probably only for testing.
 
 =back
 
