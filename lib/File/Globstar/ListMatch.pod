@@ -10,7 +10,6 @@ File::Globstar::ListMatch - List File Names Against List Of Patterns
 
     # Parse from file.
     $matcher = File::Globstar::ListMatch('.gitignore', 
-                                         directory => 'path/to/repo',
                                          ignoreCase => 1);
 
     # Parse from file handle.
@@ -45,10 +44,15 @@ File::Globstar::ListMatch - List File Names Against List Of Patterns
 
 Files containing list of files are very common to command-line options such
 like "--ignore", "--exclude" or "--include".  A well-known example is the 
-syntax used by L<https://git-scm.com/|git> as described in
+syntax used by L<git|https://git-scm.com/> as described in
 L<https://git-scm.com/docs/gitignore>.
 
-This module implements this functionality in Perl.
+This module implements the same functionality in Perl.
+
+While the module will normally be used for matching against filename, no
+file system operations are done.  Only strings are compared.  The reason for
+this is that it should be possible that names of deleted files are matched as
+well.
 
 =head2 INPUT FILE FORMAT
 
@@ -59,13 +63,13 @@ blank lines are discarded.
 
 =item B<Comments>
 
-Comments are lines that start with a hash-sign.  Escape hash-signs that are
-part of the pattern with a backslash: "\#".
+Comments are lines that start with a hash-sign.  You can escape hash-signs that 
+are part of the pattern with a backslash: "\#".
 
 =item B<Blank Lines>
 
-Blank lines are empty lines or lines consisting of whitepace only.  Whitespace
-is a sequence of US-ASCII whitespace characters, that is horizontal tabs 
+Blank lines are empty lines or lines consisting of whitespace only.  Whitespace
+is a sequence of US-ASCII whitespace characters:  horizontal tabs 
 (ASCII 9), line  feeds (ASCII 10), vertical tabs (ASCII 11), form feeds
 (ASCII 12), carriage returns (ASCII 13), and space (ASCII 32).  Other
 characters with the Unicode property "WSpace=Y" are not considered whitespace.
@@ -80,26 +84,48 @@ as a blank line and ignored.  This is consistent with the behavior of Git.
 
 =head2 PATTERNS
 
-Patterns recognized by this module are always interpreted relative to the
-base directory of the list matcher.  Things you should know about this are:
+Patterns undergo a little preprocessing:
 
 =over 4
 
+=item B<A leading exclamation is stripped off>
+
+But the pattern is now negated.  It produces a match for all files that do
+I<not> match the pattern.  A literal exclamation mark can be escaped with
+a backslash.
+
 =item B<A leading slash is stripped off>
 
-But the pattern must match the entire significant path.  If you match 
-relative to the current directory (F<.>), "/foobar" matches 
-F<./foobar> but not F<./sub/foobar> and not F<./sub/sub/foobar>.
+But the pattern must match the entire significant "path" (actually string). 
+For example "/foobar" matches for "/foobar" but not for "/sub/sub/foobar".
 
 =item B<A trailing slash is stripped off>
 
-But the pattern can only match directories.  This is why the method
-B<match()> below has an optional second argument.
-
-FIXME: How do we find out
-whether a directory that has been removed was a directory?
+But the pattern can only match "directories".  This is why the method
+B<match()> below has an optional second argument that lets you specify, 
+whether the string to be matched is considered a directory or not.
 
 =back 
+
+=head2 MATCHING ALGORITHM
+
+The string (normally a filename) passed to the matcher is compared
+subsequently to all patterns.  If none of the patterns match or if the last 
+match was against a negated pattern, the overall result is false.  Otherwise it
+is true.
+
+If a patterrn contains a slash ("/"), the match is done against the full
+path name, otherwise just against the basename of the file
+with a leading "directory" part stripped off.
+
+If a pattern starts with a leading slash, that slash is stripped off for
+the purpose of comparison but the string must match relative to the 
+base "directory".
+
+The semantics of a match are the same as for B<fnmatchstar()> in
+L<File::Globstar>.  But keep in mind that a leading exclamation mark (for
+negation), a leading "directory" part, a leading slash, or a trailing slash
+may be stripped off according to the rules outline above. 
 
 =head1 METHODS
 
@@ -120,34 +146,73 @@ file handle.
 
 B<STRINGREF> is a reference to a string containing the patterns.
 
-=item B<CODEREF>
-
-B<CODEREF> is obtained from calling the subroutine until it returns an
-empty or undefined string.
-
 =item B<ARRAYREF>
 
 You can also pass a list of patterns as an array reference.  Leading
 exclamation marks ("!") followed by possible whitespace for negating patterns
-are stripped off, but otherwise all patterns are taken as is.
+are stripped off, but otherwise all patterns are taken as is, even blank
+ones and patterns starting with a hash-sign ("#").
 
 =back
 
 The input source can be followed by optional named arguments passed as
-key-value pairs:
+key-value pairs.  Currently recogized:
 
 =over 4
 
-=item B<directory => DIRECTORY>
+=item B<ignoreCase =E<gt> 0|1|undef>
 
-Match relative to B<DIRECTORY>.  If omitted or empty, the current directory '/'
-is used.  
+Controls, whether to ignore case, when matching.  If the option is not given
+or C<undef>, a simple check in the base directory is done to find out the
+appropriate second.  Any other false value (0 or the empty string '') can
+be used to specify that case should be obeyed.  A true value will cause
+case to be ignored.
 
-=item B<ignoreCase => [0|1|undef]>
+The default is C<undef> meaning that a temporary file is created in the base
+directory for the purpose of checking whether the file system is
+case-sensitive or not.  That check necessarily suffers from race conditions.
 
-Match 
+You should also keep in mind that a directory tree may span multiple file
+systems.  Probably the best solution is to document that problem in the docs
+of your application.
+
+=item B<isIgnore =E<gt> TRUE|FALSE>
+
+If the pattern list is used for ignoring or excluding files, not all patterns
+can be negated.  The second line in the following input file would be
+useless:
+
+     /node_modules
+     !/node_modules/foobar
+
+This is the behavior of git, when evaluating ignore lists.  The rationale
+behind it is that for performance reasons, a directory that is ignored
+is skipped.  On the other hand the following is possible:
+
+    /node_modules
+    !node_modules
+    !/node_modules
+    !node_modules/
+    !/node_modules/
+
+All negations are valid.
 
 =back
+
+=item B<match STRING[, IS_DIRECTORY]>
+
+Returns true if B<STRING> matches.  If you pass a true value for the
+optional argument B<IS_DIRECTORY>, B<STRING> is considered to be the name
+of a directory.
+
+A leading slash in B<STRING> is stripped off and is ignored.
+
+A trailing slash is also ignored but B<STRING> is then considered to
+be a directory name and B<IS_DIRECTORY> is ignored.
+
+When comparing against a pattern that contains a slash (except for a trailing
+slash), the full string is taken into account.  Otherwise, only the part
+after the last (non-trailing) slash is taken into account.
 
 =back
 
