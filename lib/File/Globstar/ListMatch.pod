@@ -214,6 +214,10 @@ When comparing against a pattern that contains a slash (except for a trailing
 slash), the full string is taken into account.  Otherwise, only the part
 after the last (non-trailing) slash is taken into account.
 
+=item B<patterns>
+
+Returns the patterns as a list.  This is useful probably only for testing.
+
 =back
 
 =head1 COPYRIGHT
