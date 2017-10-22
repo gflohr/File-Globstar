@@ -73,11 +73,12 @@ sub _readString {
 
     my @lines;
     foreach my $line (split /\n/, $string) {
+        next if $line =~ /^#/;
         push @lines, $line;
     }
 
     $self->_readArray(\@lines);
-    
+
     return $self;
 }
 

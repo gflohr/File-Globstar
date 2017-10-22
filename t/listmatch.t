@@ -30,4 +30,17 @@ is_deeply [$matcher->patterns], [
     qr{^BarBaz$}
 ], 'string input';
 
+$input = <<EOF;
+# Comment
+FooBar
+# Comment
+BarBaz
+# Comment
+EOF
+$matcher = File::Globstar::ListMatch->new(\$input);
+is_deeply [$matcher->patterns], [
+    qr{^FooBar$},
+    qr{^BarBaz$}
+], 'discard comments';
+
 done_testing;
