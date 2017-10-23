@@ -248,4 +248,5 @@ all rights reserved.
 
 =head1 SEE ALSO
 
-File::Glob(3pm), glob(3), glob(7), fnmatch(3), glob(1), perl(1)
+File::Glob(3pm), File::Globstar::Listmatch(3pm), glob(3), glob(7), fnmatch(3), 
+glob(1), perl(1)
