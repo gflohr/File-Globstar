@@ -20,6 +20,10 @@ File::Globstar - Globbing With Double Asterisk Expansion
 
 =head1 DESCRIPTION
 
+Shortcut: If you want to implement file inclusion or exclusion in the style
+of L<.gitignore|https://git-scm.com/docs/gitignore>, have a look at 
+L<File::Globstar::ListMatch>.
+
 Many globbing implementations have been recently extended to accept the
 pattern F<**> in place of a path element.  The double asterisk matches
 all files and directories in the current directory and all of its
