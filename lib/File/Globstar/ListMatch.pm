@@ -34,7 +34,7 @@ sub new {
         } else {
            $self->_readFileHandle($input);
         }
-    } elsif ("GLOB" eq ref \$input) {
+    } elsif ("GLOB" eq reftype \$input) {
         $self->_readFileHandle(\$input, );
     } else {
         die "filename\n";
