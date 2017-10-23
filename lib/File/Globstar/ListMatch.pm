@@ -11,8 +11,10 @@ package File::Globstar::ListMatch;
 
 use strict;
 
-use File::Globstar qw(translatestar);
+use Locale::TextDomain qw(File-Globstar);
 use Scalar::Util qw(reftype);
+
+use File::Globstar qw(translatestar);
 
 sub new {
     my ($class, $input, %options) = @_;
@@ -21,6 +23,7 @@ sub new {
     bless $self, $class;
     $self->{__ignore_case} = delete $options{ignoreCase};
     $self->{__is_ignore} = delete $options{isExclude};
+    $self->{__filename} = delete $options{filename};
 
     if (ref $input) {
         my $type = reftype $input;
@@ -32,7 +35,7 @@ sub new {
            die "reference to file handle\n";
         }
     } elsif ("GLOB" eq ref \$input) {
-        die "GLOB\n";
+        $self->_readFileHandle(\$input, );
     } else {
         die "filename\n";
     }
@@ -94,9 +97,22 @@ sub _readString {
         push @lines, $line;
     }
 
-    $self->_readArray(\@lines);
+    return $self->_readArray(\@lines);
+}
 
-    return $self;
+sub _readFileHandle {
+    my ($self, $fh) = @_;
+
+    my $filename = $self->{__filename};
+    $filename = __["in memory string"] if File::Globstar::empty($filename);
+
+    $fh->clearerr;
+    my @lines = $fh->getlines;
+
+    die __x("Error reading '{filename}': {error}!\n",
+            filename => $filename, error => $!) if $fh->error;
+    
+    return $self->_readString(join '', @lines);
 }
 
 1;

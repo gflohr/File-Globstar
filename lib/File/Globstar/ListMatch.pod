@@ -22,7 +22,7 @@ File::Globstar::ListMatch - List File Names Against List Of Patterns
         'src/**/*.o',
         '.*',
         '!.gitignore'
-    ]);
+    ], filename => 'exclude.txt');
 
     # Parse string.
     $patterns = <<EOF;
@@ -197,6 +197,10 @@ is skipped.  On the other hand the following is possible:
     !/node_modules/
 
 All negations are valid.
+
+=item B<filename =E<gt> FILENAME>
+
+Use B<FILENAME> in messages for I/O errors.
 
 =back
 

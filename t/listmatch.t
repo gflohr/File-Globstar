@@ -85,4 +85,13 @@ is_deeply [$matcher->patterns], [
     qr{^\ $},
 ], 'trailing whitespace';
 
+open HANDLE, '<', 't/patterns' 
+    or die "Cannot open 't/patterns' for reading: $!";
+$matcher = File::Globstar::ListMatch->new(*HANDLE, filename => 't/patterns');
+is_deeply [$matcher->patterns], [
+    qr{^foo$},
+    qr{^bar$},
+    qr{^baz$},
+], 'read from GLOB';
+
 done_testing;
