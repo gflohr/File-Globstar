@@ -32,7 +32,7 @@ sub new {
         } elsif ('ARRAY' eq $type) {
            $self->_readArray($input);
         } else {
-           die "reference to file handle\n";
+           $self->_readFileHandle($input);
         }
     } elsif ("GLOB" eq ref \$input) {
         $self->_readFileHandle(\$input, );
