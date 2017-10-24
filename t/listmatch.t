@@ -103,4 +103,11 @@ is_deeply [$matcher->patterns], [
     qr{^baz$},
 ], 'read from GLOB';
 
+$matcher = File::Globstar::ListMatch->new('t/patterns');
+is_deeply [$matcher->patterns], [
+    qr{^foo$},
+    qr{^bar$},
+    qr{^baz$},
+], 'read from GLOB';
+
 done_testing;

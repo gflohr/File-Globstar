@@ -37,7 +37,7 @@ sub new {
     } elsif ("GLOB" eq reftype \$input) {
         $self->_readFileHandle(\$input, );
     } else {
-        die "filename\n";
+        $self->_readFile($input);
     }
 
     return $self;
@@ -113,6 +113,19 @@ sub _readFileHandle {
             filename => $filename, error => $!) if $fh->error;
     
     return $self->_readString(join '', @lines);
+}
+
+sub _readFile {
+    my ($self, $filename) = @_;
+
+    $self->{__filename} = $filename
+        if File::Globstar::empty($self->{__filename});
+
+    open my $fh, '<', $filename
+        or die __x("Error reading '{filename}': {error}!\n",
+                   filename => $filename, error => $!);
+    
+    return $self->_readFileHandle($fh);
 }
 
 1;
