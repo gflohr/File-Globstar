@@ -11,6 +11,7 @@ use Test::More;
 ok require File::Globstar::ListMatch;
 
 sub unref;
+sub get_blessings;
 
 my ($matcher, $input, @patterns);
 
@@ -113,6 +114,7 @@ is_deeply [unref $matcher->patterns], [
 ], 'read from GLOB';
 
 $input = <<EOF;
+regular
 !negated
 /full-match
 !/negated-full-match
@@ -121,7 +123,12 @@ directory/
 !negated/full-match-directory/
 EOF
 $matcher = File::Globstar::ListMatch->new(\$input);
+use constant RE_NONE => 0x0;
+use constant RE_NEGATED => 0x1;
+use constant RE_FULL_MATCH => 0x2;
+use constant RE_DIRECTORY => 0x4;
 is_deeply [unref $matcher->patterns], [
+    qr{^regular$},
     qr{^negated$},
     qr{^full\-match$},
     qr{^negated\-full\-match$},
@@ -129,6 +136,15 @@ is_deeply [unref $matcher->patterns], [
     qr{^negated\-directory$},
     qr{^negated\/full\-match\-directory$},
 ], 'strip-off';
+is_deeply [get_blessings $matcher->patterns], [
+    RE_NONE,
+    RE_NEGATED,
+    RE_FULL_MATCH,
+    RE_NEGATED | RE_FULL_MATCH,
+    RE_DIRECTORY,
+    RE_NEGATED | RE_DIRECTORY,
+    RE_NEGATED | RE_DIRECTORY | RE_FULL_MATCH,    
+], 'blessings';
 
 done_testing;
 
@@ -136,4 +152,10 @@ sub unref {
     my (@patterns) = @_;
 
     return map { $$_ } @patterns;
+}
+
+sub get_blessings {
+    my (@patterns) = @_;
+
+    return map { ref $_ } @patterns;
 }
