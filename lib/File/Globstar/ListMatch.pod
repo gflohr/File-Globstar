@@ -28,7 +28,6 @@ File::Globstar::ListMatch - List File Names Against List Of Patterns
     $patterns = <<EOF;
     # Ignore all compiled object files.
     src/**/*.o
-
     # Ignore all hidden files.
     '.*'
     # But not this one.
@@ -43,17 +42,17 @@ File::Globstar::ListMatch - List File Names Against List Of Patterns
 
 =head1 DESCRIPTION
 
-Files containing list of files are very common to command-line options such
-like "--ignore", "--exclude" or "--include".  A well-known example is the 
+Files containing list of files are very common as arguments to command-line options such
+as "--ignore", "--exclude" or "--include".  A well-known example is the 
 syntax used by L<git|https://git-scm.com/> as described in
 L<https://git-scm.com/docs/gitignore>.
 
 This module implements the same functionality in Perl.
 
-While the module will normally be used for matching against filename, no
+While the module will normally be used for matching against filenames, no
 file system operations are done.  Only strings are compared.  The reason for
-this is that it should be possible that names of deleted files are matched as
-well.
+this is that it should be possible to match names of deleted files as
+well as existing files.
 
 =head2 INPUT FILE FORMAT
 

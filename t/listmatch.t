@@ -10,11 +10,13 @@ use Test::More;
 
 ok require File::Globstar::ListMatch;
 
+sub unref;
+
 my ($matcher, $input, @patterns);
 
 $input = [qw (Tom Dick Harry)];
 $matcher = File::Globstar::ListMatch->new($input);
-is_deeply [$matcher->patterns], [
+is_deeply [unref $matcher->patterns], [
     qr{^Tom$},
     qr{^Dick$},
     qr{^Harry$},
@@ -25,7 +27,7 @@ FooBar
 BarBaz
 EOF
 $matcher = File::Globstar::ListMatch->new(\$input);
-is_deeply [$matcher->patterns], [
+is_deeply [unref $matcher->patterns], [
     qr{^FooBar$},
     qr{^BarBaz$}
 ], 'string input';
@@ -38,7 +40,7 @@ BarBaz
 # Comment
 EOF
 $matcher = File::Globstar::ListMatch->new(\$input);
-is_deeply [$matcher->patterns], [
+is_deeply [unref $matcher->patterns], [
     qr{^FooBar$},
     qr{^BarBaz$}
 ], 'discard comments';
@@ -54,7 +56,7 @@ BarBaz
 $whitespace$whitespace
 EOF
 $matcher = File::Globstar::ListMatch->new(\$input);
-is_deeply [$matcher->patterns], [
+is_deeply [unref $matcher->patterns], [
     qr{^FooBar$},
     qr{^BarBaz$}
 ], 'discard empty lines';
@@ -64,7 +66,7 @@ foo\\bar
 foo\\\\bar
 EOF
 $matcher = File::Globstar::ListMatch->new(\$input);
-is_deeply [$matcher->patterns], [
+is_deeply [unref $matcher->patterns], [
     qr{^foobar$},
     qr{^foo\\bar$}
 ], 'backslash escape regular characters';
@@ -77,7 +79,7 @@ escaped space again\\\\\\\\\\$space$whitespace
 \\$space
 EOF
 $matcher = File::Globstar::ListMatch->new(\$input);
-is_deeply [$matcher->patterns], [
+is_deeply [unref $matcher->patterns], [
     qr{^trailing\ space$},
     qr{^escaped\ space\ $},
     qr{^not\ escaped\ space\\$},
@@ -88,7 +90,7 @@ is_deeply [$matcher->patterns], [
 open HANDLE, '<', 't/patterns' 
     or die "Cannot open 't/patterns' for reading: $!";
 $matcher = File::Globstar::ListMatch->new(*HANDLE, filename => 't/patterns');
-is_deeply [$matcher->patterns], [
+is_deeply [unref $matcher->patterns], [
     qr{^foo$},
     qr{^bar$},
     qr{^baz$},
@@ -97,17 +99,41 @@ is_deeply [$matcher->patterns], [
 open my $fh, '<', 't/patterns' 
     or die "Cannot open 't/patterns' for reading: $!";
 $matcher = File::Globstar::ListMatch->new($fh, filename => 't/patterns');
-is_deeply [$matcher->patterns], [
+is_deeply [unref $matcher->patterns], [
     qr{^foo$},
     qr{^bar$},
     qr{^baz$},
 ], 'read from GLOB';
 
 $matcher = File::Globstar::ListMatch->new('t/patterns');
-is_deeply [$matcher->patterns], [
+is_deeply [unref $matcher->patterns], [
     qr{^foo$},
     qr{^bar$},
     qr{^baz$},
 ], 'read from GLOB';
 
+$input = <<EOF;
+!negated
+/full-match
+!/negated-full-match
+directory/
+!negated-directory/
+!negated/full-match-directory/
+EOF
+$matcher = File::Globstar::ListMatch->new(\$input);
+is_deeply [unref $matcher->patterns], [
+    qr{^negated$},
+    qr{^full\-match$},
+    qr{^negated\-full\-match$},
+    qr{^directory$},
+    qr{^negated\-directory$},
+    qr{^negated\/full\-match\-directory$},
+], 'strip-off';
+
 done_testing;
+
+sub unref {
+    my (@patterns) = @_;
+
+    return map { $$_ } @patterns;
+}

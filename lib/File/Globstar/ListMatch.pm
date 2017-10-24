@@ -16,13 +16,18 @@ use Scalar::Util qw(reftype);
 
 use File::Globstar qw(translatestar);
 
+use constant RE_NONE => 0x0;
+use constant RE_NEGATED => 0x1;
+use constant RE_FULL_MATCH => 0x2;
+use constant RE_DIRECTORY => 0x4;
+
 sub new {
     my ($class, $input, %options) = @_;
 
     my $self = {};
     bless $self, $class;
     $self->{__ignore_case} = delete $options{ignoreCase};
-    $self->{__is_ignore} = delete $options{isExclude};
+    $self->{__is_exclude} = delete $options{isExclude};
     $self->{__filename} = delete $options{filename};
 
     if (ref $input) {
@@ -55,17 +60,25 @@ sub _readArray {
 
     my $ignore_case = $self->{__ignoreCase};
     foreach my $line (@$lines) {
+        my $blessing = RE_NONE;
+        $blessing |= RE_NEGATED if $line =~ s/^!//;
+        $blessing |= RE_DIRECTORY if $line =~ s{/$}{};
+        $blessing |= RE_FULL_MATCH if $line =~ m{/};
+        $line =~ s{^/}{};
+
         my $transpiled = eval { translatestar $line, $ignore_case };
         if ($@) {
             $transpiled = quotemeta $line;
             if ($ignore_case) {
-                push @patterns, qr/^$transpiled$/i;
+                push @patterns, \qr/^$transpiled$/i;
             } else {
-                push @patterns, qr/^$transpiled$/;
+                push @patterns, \qr/^$transpiled$/;
             }
         } else {
-            push @patterns, $transpiled;
+            push @patterns, \$transpiled;
         }
+
+        bless $patterns[-1], $blessing;
     }
 
     return $self;
