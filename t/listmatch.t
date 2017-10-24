@@ -156,6 +156,14 @@ ok $matcher->match('/path/to/hello.pl'), 'basename match with leading slash';
 ok !$matcher->match('goodbye.pl'), 'regular mismatch';
 ok !$matcher->match('hello.pl/goodbye.pl'), 'basename mismatch';
 
+
+$input = <<EOF;
+/hello.pl
+EOF
+$matcher = File::Globstar::ListMatch->new(\$input);
+ok $matcher->match('hello.pl'), 'full path match';
+ok !$matcher->match('path/to/hello.pl'), 'match in subdirectory';
+
 done_testing;
 
 sub unref {
