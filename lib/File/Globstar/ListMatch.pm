@@ -48,6 +48,39 @@ sub new {
     return $self;
 }
 
+sub match {
+    my ($self, $path, $is_directory) = @_;
+
+    $is_directory = 1 if $path =~ s{/$}{};
+    $path =~ s{^/}{};
+
+    my $basename = $path;
+    $basename =~ s{.*/}{};
+
+    my $match;
+    foreach my $pattern ($self->patterns) {
+        my $type = ref $pattern;
+        if ($type & RE_NEGATED) {
+            next if !$match;
+        } else {
+            next if $match;
+        }
+
+        my $string = $type & RE_FULL_MATCH ? $path : $basename;
+        my $matched_here = $string =~ $$pattern;
+        next if !$matched_here;
+        if ($type & RE_DIRECTORY) {
+            next if !$is_directory;
+        }
+
+        $match = $type ^ RE_NEGATED;
+    }
+
+    return if !$match;
+
+    return $self;
+}
+
 sub patterns {
     return @{shift->{__patterns}};
 }

@@ -146,6 +146,16 @@ is_deeply [get_blessings $matcher->patterns], [
     RE_NEGATED | RE_DIRECTORY | RE_FULL_MATCH,    
 ], 'blessings';
 
+$input = <<EOF;
+hello.pl
+EOF
+$matcher = File::Globstar::ListMatch->new(\$input);
+ok $matcher->match('hello.pl'), 'regular match';
+ok $matcher->match('path/to/hello.pl'), 'basename match';
+ok $matcher->match('/path/to/hello.pl'), 'basename match with leading slash';
+ok !$matcher->match('goodbye.pl'), 'regular mismatch';
+ok !$matcher->match('hello.pl/goodbye.pl'), 'basename mismatch';
+
 done_testing;
 
 sub unref {
