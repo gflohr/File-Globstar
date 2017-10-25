@@ -27,8 +27,10 @@ my %module_build_args = (
     "Exporter" => 0,
     "File::Find" => 0,
     "File::Glob" => 0,
+    "Locale::TextDomain" => 0,
     "Scalar::Util" => 0,
     "base" => 0,
+    "constant" => 0,
     "strict" => 0,
     "vars" => 0
   },

@@ -23,8 +23,10 @@ my %WriteMakefileArgs = (
     "Exporter" => 0,
     "File::Find" => 0,
     "File::Glob" => 0,
+    "Locale::TextDomain" => 0,
     "Scalar::Util" => 0,
     "base" => 0,
+    "constant" => 0,
     "strict" => 0,
     "vars" => 0
   },
@@ -42,10 +44,12 @@ my %FallbackPrereqs = (
   "Exporter" => 0,
   "File::Find" => 0,
   "File::Glob" => 0,
+  "Locale::TextDomain" => 0,
   "Module::Build" => "0.28",
   "Scalar::Util" => 0,
   "Test::More" => 0,
   "base" => 0,
+  "constant" => 0,
   "strict" => 0,
   "vars" => 0
 );
