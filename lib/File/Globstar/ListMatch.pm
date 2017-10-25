@@ -13,6 +13,7 @@ use strict;
 
 use Locale::TextDomain qw(File-Globstar);
 use Scalar::Util qw(reftype);
+use IO::Handle;
 
 use File::Globstar qw(translatestar);
 
