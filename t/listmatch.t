@@ -164,6 +164,17 @@ $matcher = File::Globstar::ListMatch->new(\$input);
 ok $matcher->match('hello.pl'), 'full path match';
 ok !$matcher->match('path/to/hello.pl'), 'match in subdirectory';
 
+$input = <<EOF;
+*.o
+!o.o
+EOF
+$matcher = File::Globstar::ListMatch->new(\$input);
+ok $matcher->match('path/to/compiled.o'), 'wildcard match';
+ok !$matcher->match('o.o'), 'negated match';
+ok !$matcher->match('path/to/o.o'), 'negated match in subdirectory';
+
+# TODO: Test isExclude and ignoreCase!
+
 done_testing;
 
 sub unref {
