@@ -173,7 +173,13 @@ ok $matcher->match('path/to/compiled.o'), 'wildcard match';
 ok !$matcher->match('o.o'), 'negated match';
 ok !$matcher->match('path/to/o.o'), 'negated match in subdirectory';
 
-# TODO: Test isExclude and ignoreCase!
+$input = <<EOF;
+FooBar
+EOF
+$matcher = File::Globstar::ListMatch->new(\$input, ignoreCase => 1);
+ok $matcher->match('FooBar'), 'ignoreCase exact';
+ok $matcher->match('foobar'), 'ignoreCase lower';
+ok $matcher->match('FOOBAR'), 'ignoreCase upper';
 
 done_testing;
 

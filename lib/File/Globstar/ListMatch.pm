@@ -91,7 +91,7 @@ sub _readArray {
     my @patterns;
     $self->{__patterns} = \@patterns;
 
-    my $ignore_case = $self->{__ignoreCase};
+    my $ignore_case = $self->{__ignore_case};
     foreach my $line (@$lines) {
         my $blessing = RE_NONE;
         $blessing |= RE_NEGATED if $line =~ s/^!//;
