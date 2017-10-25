@@ -162,19 +162,10 @@ key-value pairs.  Currently recogized:
 
 =item B<ignoreCase =E<gt> 0|1|undef>
 
-Controls, whether to ignore case, when matching.  If the option is not given
-or C<undef>, a simple check in the base directory is done to find out the
-appropriate second.  Any other false value (0 or the empty string '') can
-be used to specify that case should be obeyed.  A true value will cause
-case to be ignored.
-
-The default is C<undef> meaning that a temporary file is created in the base
-directory for the purpose of checking whether the file system is
-case-sensitive or not.  That check necessarily suffers from race conditions.
-
-You should also keep in mind that a directory tree may span multiple file
-systems.  Probably the best solution is to document that problem in the docs
-of your application.
+Controls, whether to ignore case, when matching.  A true value will cause
+case to be ignored.  The default value is false, so that matches are done
+in a case-sensitive manner.  This is an appropriate setting for both
+case-sensitive and case-preserving file systems.
 
 =item B<isExclude =E<gt> TRUE|FALSE>
 
