@@ -47,7 +47,6 @@ foreach my $test (@tests) {
    my $got = fnmatchstar $pattern, $string;
    $name = '' if !defined $name;
    my $translated = eval { translatestar $pattern };
-   warn $@ if $@;
    my $x = $@;
    $translated = "[exception thrown: $x]" if defined $x;
 
