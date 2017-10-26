@@ -32,6 +32,7 @@ my %WriteMakefileArgs = (
     "vars" => 0
   },
   "TEST_REQUIRES" => {
+    "Cwd" => 0,
     "Test::More" => 0
   },
   "VERSION" => "0.1",
@@ -42,6 +43,7 @@ my %WriteMakefileArgs = (
 
 
 my %FallbackPrereqs = (
+  "Cwd" => 0,
   "Exporter" => 0,
   "File::Find" => 0,
   "File::Glob" => 0,

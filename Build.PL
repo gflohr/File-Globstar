@@ -36,12 +36,14 @@ my %module_build_args = (
     "vars" => 0
   },
   "test_requires" => {
+    "Cwd" => 0,
     "Test::More" => 0
   }
 );
 
 
 my %fallback_build_requires = (
+  "Cwd" => 0,
   "Module::Build" => "0.28",
   "Test::More" => 0
 );
