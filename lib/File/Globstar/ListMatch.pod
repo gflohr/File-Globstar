@@ -167,27 +167,6 @@ case to be ignored.  The default value is false, so that matches are done
 in a case-sensitive manner.  This is an appropriate setting for both
 case-sensitive and case-preserving file systems.
 
-=item B<isExclude =E<gt> TRUE|FALSE>
-
-If the pattern list is used for ignoring or excluding files, not all patterns
-can be negated.  The second line in the following input file would be
-useless:
-
-     /node_modules
-     !/node_modules/foobar
-
-This is the behavior of git, when evaluating ignore lists.  The rationale
-behind it is that for performance reasons, a directory that is ignored
-is skipped.  On the other hand the following is possible:
-
-    /node_modules
-    !node_modules
-    !/node_modules
-    !node_modules/
-    !/node_modules/
-
-All negations are valid.
-
 =item B<filename =E<gt> FILENAME>
 
 Use B<FILENAME> in messages for I/O errors.
@@ -208,6 +187,84 @@ be a directory name and B<IS_DIRECTORY> is ignored.
 When comparing against a pattern that contains a slash (except for a trailing
 slash), the full string is taken into account.  Otherwise, only the part
 after the last (non-trailing) slash is taken into account.
+
+Note that B<match()> assumes that you are excluding or ignoring files.  This
+I<exclude> mode implies that certain negations do not make sense and are
+ignored.  Thake this example:
+
+     /node_modules
+     !/node_modules/foobar
+
+The second line gets ignored.  In exclude mode it is assumed that you 
+recurse a directory calling B<match()> for every file you visit.  If a file
+matches it is always ignored.  And if it is a directory, it is not only
+ignored but the recursion also stops here.
+
+The exact rule is: You cannot re-include a file by negating a pattern if one
+of the file's parent directories would be excluded.  
+
+This is the  behavior of git, when evaluating ignore lists.  If you want to
+avoid that behavior, see below for B<matchInclude()>.
+
+On the other hand, the following is possible:
+
+    docs/_*
+    !docs/_posts
+
+The only "parent directory" for the negation is F<docs> and that is not
+excluded.  This is different to this example:
+
+    docs/_*
+    !docs/_posts/recent
+
+The "parent directories" are F<docs> and F<docs/_posts> and F<docs/_posts>
+matches against F<docs/_*>.  The negation is therefore invalid and ignored.
+
+=item B<matchExclude STRING[, IS_DIRECTORY]>
+
+This is an alias for B<match()>
+
+=item B<matchInclude STRING[, IS_DIRECTORY]>
+
+Does the same as B<match()> but all negations are valid.
+
+The metaphor for include mode is different from exclude mode that is
+assumed by B<match()> resp. B<matchExclude()>.  In include mode you would
+interpret all patterns as globbing patterns.  A positive, non-negated
+pattern would cause the matching files to be added to result list.  A
+negated pattern will remove the matching files from the result list.  The
+operation would happen recursively if a directory gets added or removed.
+
+We take almost the same example as for B<match()> above:
+
+    docs/_*
+    !docs/_posts/archive
+
+Imagine line 1 would produce the following list:
+
+=over 4
+
+=item * F<docs/_views/>
+
+=item * F<docs/_views/main.html>
+
+=item * F<docs/_views/head/>
+
+=item * F<docs/_views/head/meta.html>
+
+=item * F<docs/_posts/new/>
+
+=item * F<docs/_posts/new/post4321.html>
+
+=item * F<docs/_posts/archive/>
+
+=item * F<docs/_posts/archive/post1.html>
+
+=item * F<docs/_posts/archive/post2.html>
+
+Line 2 would then kickout the last three matches from the result list.
+
+=back
 
 =item B<patterns>
 

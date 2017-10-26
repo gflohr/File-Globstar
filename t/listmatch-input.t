@@ -8,7 +8,7 @@ use strict;
 
 use Test::More;
 
-ok require File::Globstar::ListMatch;
+use File::Globstar::ListMatch;
 
 sub unref;
 sub get_blessings;
@@ -145,41 +145,6 @@ is_deeply [get_blessings $matcher->patterns], [
     RE_NEGATED | RE_DIRECTORY,
     RE_NEGATED | RE_DIRECTORY | RE_FULL_MATCH,    
 ], 'blessings';
-
-$input = <<EOF;
-hello.pl
-EOF
-$matcher = File::Globstar::ListMatch->new(\$input);
-ok $matcher->match('hello.pl'), 'regular match';
-ok $matcher->match('path/to/hello.pl'), 'basename match';
-ok $matcher->match('/path/to/hello.pl'), 'basename match with leading slash';
-ok !$matcher->match('goodbye.pl'), 'regular mismatch';
-ok !$matcher->match('hello.pl/goodbye.pl'), 'basename mismatch';
-
-
-$input = <<EOF;
-/hello.pl
-EOF
-$matcher = File::Globstar::ListMatch->new(\$input);
-ok $matcher->match('hello.pl'), 'full path match';
-ok !$matcher->match('path/to/hello.pl'), 'match in subdirectory';
-
-$input = <<EOF;
-*.o
-!o.o
-EOF
-$matcher = File::Globstar::ListMatch->new(\$input);
-ok $matcher->match('path/to/compiled.o'), 'wildcard match';
-ok !$matcher->match('o.o'), 'negated match';
-ok !$matcher->match('path/to/o.o'), 'negated match in subdirectory';
-
-$input = <<EOF;
-FooBar
-EOF
-$matcher = File::Globstar::ListMatch->new(\$input, ignoreCase => 1);
-ok $matcher->match('FooBar'), 'ignoreCase exact';
-ok $matcher->match('foobar'), 'ignoreCase lower';
-ok $matcher->match('FOOBAR'), 'ignoreCase upper';
 
 done_testing;
 

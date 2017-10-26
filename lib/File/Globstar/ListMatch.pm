@@ -28,7 +28,6 @@ sub new {
     my $self = {};
     bless $self, $class;
     $self->{__ignore_case} = delete $options{ignoreCase};
-    $self->{__is_exclude} = delete $options{isExclude};
     $self->{__filename} = delete $options{filename};
 
     if (ref $input) {
@@ -50,36 +49,55 @@ sub new {
 }
 
 sub match {
-    my ($self, $path, $is_directory) = @_;
+    my ($self, $full_path, $full_is_directory) = @_;
 
-    $is_directory = 1 if $path =~ s{/$}{};
-    $path =~ s{^/}{};
+    $full_is_directory = 1 if $full_path =~ s{/$}{};
+    $full_path =~ s{^/}{};
 
-    my $basename = $path;
-    $basename =~ s{.*/}{};
-
-    my $match;
-    foreach my $pattern ($self->patterns) {
-        my $type = ref $pattern;
-        if ($type & RE_NEGATED) {
-            next if !$match;
-        } else {
-            next if $match;
-        }
-
-        my $string = $type & RE_FULL_MATCH ? $path : $basename;
-        my $matched_here = $string =~ $$pattern;
-        next if !$matched_here;
-        if ($type & RE_DIRECTORY) {
-            next if !$is_directory;
-        }
-
-        $match = $type ^ RE_NEGATED;
+    my @parts = split '/', $full_path;
+    my @paths = shift @parts;
+    foreach my $part (@parts) {
+        push @paths, "/$part";
     }
 
-    return if !$match;
+    for (my $i = 0; $i <= $#paths; ++$i) {
+        my $path = $paths[$i];
+        my $is_directory = $full_is_directory || $i != $#paths;
+        my $match;
 
-    return $self;
+        my $basename = $path;
+        $basename =~ s{.*/}{};
+
+        foreach my $pattern ($self->patterns) {
+            my $type = ref $pattern;
+            if ($type & RE_NEGATED) {
+                next if !$match;
+            } else {
+                next if $match;
+            }
+
+            my $string = $type & RE_FULL_MATCH ? $path : $basename;
+            next if $string !~ $$pattern;
+
+            if ($type & RE_DIRECTORY) {
+                next if !$is_directory;
+            }
+
+            if ($type & RE_NEGATED) {
+                $match = 0;
+            } else {
+                $match = 1;
+            }
+        }
+
+        return $self if $match;
+    }
+
+    return;
+}
+
+sub matchExclude {
+    &match;
 }
 
 sub patterns {
