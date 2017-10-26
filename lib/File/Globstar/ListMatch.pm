@@ -48,60 +48,8 @@ sub new {
     return $self;
 }
 
-sub match {
-    my ($self, $full_path, $full_is_directory) = @_;
-
-    $full_is_directory = 1 if $full_path =~ s{/$}{};
-    $full_path =~ s{^/}{};
-
-    my @parts = split '/', $full_path;
-    my @paths = shift @parts;
-    foreach my $part (@parts) {
-        push @paths, "$paths[-1]/$part";
-    }
-
-    for (my $i = 0; $i <= $#paths; ++$i) {
-        my $path = $paths[$i];
-        my $is_directory = $full_is_directory || $i != $#paths;
-        my $match;
-
-        my $basename = $path;
-        $basename =~ s{.*/}{};
-
-        foreach my $pattern ($self->patterns) {
-            my $type = ref $pattern;
-            if ($type & RE_NEGATED) {
-                next if !$match;
-            } else {
-                next if $match;
-            }
-
-            my $string = $type & RE_FULL_MATCH ? $path : $basename;
-            next if $string !~ $$pattern;
-
-            if ($type & RE_DIRECTORY) {
-                next if !$is_directory;
-            }
-
-            if ($type & RE_NEGATED) {
-                $match = 0;
-            } else {
-                $match = 1;
-            }
-        }
-
-        return $self if $match;
-    }
-
-    return;
-}
-
-sub matchExclude {
-    &match;
-}
-
-sub matchInclude {
-    my ($self, $full_path, $full_is_directory) = @_;
+sub __match {
+    my ($self, $imode, $full_path, $full_is_directory) = @_;
 
     $full_is_directory = 1 if $full_path =~ s{/$}{};
     $full_path =~ s{^/}{};
@@ -116,6 +64,7 @@ sub matchInclude {
     for (my $i = 0; $i <= $#paths; ++$i) {
         my $path = $paths[$i];
         my $is_directory = $full_is_directory || $i != $#paths;
+        undef $match unless $imode;
 
         my $basename = $path;
         $basename =~ s{.*/}{};
@@ -142,11 +91,28 @@ sub matchInclude {
             }
         }
 
+        return $self if $match && !$imode;
     }
 
-    return $self if $match;
+    return $self if $match && $imode;
 
-    return;    
+    return;
+}
+
+sub match {
+    my ($self) = shift @_;
+    
+    return $self->__match(undef, @_);
+}
+
+sub matchExclude {
+    &match;
+}
+
+sub matchInclude {
+    my ($self) = shift @_;
+    
+    return $self->__match(1, @_);
 }
 
 sub patterns {
