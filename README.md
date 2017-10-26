@@ -56,8 +56,7 @@ $re = File::Globstar::translatestar('**/*.css');
 
 # Parse from file.
 $matcher = File::Globstar::ListMatch('.gitignore', 
-                                     ignoreCase => 1,
-                                     isExclude => 1);
+                                     ignoreCase => 1);
 
 # Parse from file handle.
 $matcher = File::Globstar::ListMatch(STDIN, ignoreCase => 0);
