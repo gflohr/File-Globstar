@@ -133,6 +133,11 @@ sub _readArray {
         $blessing |= RE_FULL_MATCH if $line =~ m{/};
         $line =~ s{^/}{};
 
+        # This causes a warning in git.  We simply ignore it.
+        next if !length $line;
+
+        $line = '' if $@;
+        
         my $transpiled = eval { translatestar $line, 
                                 ignoreCase => $ignore_case };
         if ($@) {

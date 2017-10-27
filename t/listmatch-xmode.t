@@ -6,7 +6,7 @@
 
 use strict;
 
-use Test::More;
+use Test::More tests => 35;
 
 use File::Globstar::ListMatch;
 
@@ -118,4 +118,16 @@ ok $matcher->match('node_modules', 1), 'explicit directory match';
 ok $matcher->match('node_modules/'), 'implicit directory match';
 ok $matcher->match('node_modules/', 0), 'implicit override directory match';
 
-done_testing;
+SKIP: {
+    skip "avoid git warning", 2 if $ENV{FILE_GLOBSTAR_GIT_CHECK_IGNORE};
+
+    $input = <<EOF;
+/
+EOF
+    $matcher = File::Globstar::ListMatch->new(\$input);
+    ok !$matcher->match('/'), 'slash';
+    ok !$matcher->match('/top-level'), 'top-level';
+}
+
+# This file gets required by the git test!
+1;

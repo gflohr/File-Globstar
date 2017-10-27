@@ -6,7 +6,7 @@
 
 use strict;
 
-use Test::More;
+use Test::More tests => 31;
 
 use File::Globstar::ListMatch;
 
@@ -111,5 +111,3 @@ ok !$matcher->matchInclude('node_modules', 0), 'non-directory match';
 ok $matcher->matchInclude('node_modules', 1), 'explicit directory match';
 ok $matcher->matchInclude('node_modules/'), 'implicit directory match';
 ok $matcher->matchInclude('node_modules/', 0), 'implicit override directory match';
-
-done_testing;
