@@ -6,7 +6,7 @@
 
 use strict;
 
-use Test::More tests => 35;
+use Test::More tests => 38;
 
 use File::Globstar::ListMatch;
 
@@ -129,5 +129,24 @@ EOF
     ok !$matcher->match('/top-level'), 'top-level';
 }
 
+$input =<<EOF;
+\/foobar
+EOF
+$matcher = File::Globstar::ListMatch->new(\$input);
+ok $matcher->match('foobar'), 'escaped leading slash';
+
+$input =<<EOF;
+foobar\/
+EOF
+$matcher = File::Globstar::ListMatch->new(\$input);
+ok !$matcher->match('foobar'), 'escaped trailing slash';
+
+$input =<<EOF;
+\/foobar\/
+EOF
+$matcher = File::Globstar::ListMatch->new(\$input);
+ok !$matcher->match('foobar'), 'two escaped slashes';
+
 # This file gets required by the git test!
+
 1;
