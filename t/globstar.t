@@ -6,7 +6,7 @@
 
 use strict;
 
-use Test::More tests => 11;
+use Test::More tests => 8;
 
 use File::Globstar qw(globstar);
 
@@ -16,14 +16,11 @@ ok chdir $dir;
 
 my @files = globstar '*.empty';
 is_deeply [sort @files],
-          [('***.empty', 'one.empty', 'three.empty', 'two.empty')];
+          [('one.empty', 'three.empty', 'two.empty')];
 
 @files = globstar '**';
 is_deeply [sort @files],
           [qw (
-               ***
-               ***.empty
-               ***/empty
                first
                first/one.empty
                first/second
@@ -44,7 +41,6 @@ is_deeply [sort @files],
 @files = globstar '**/';
 is_deeply [sort @files],
           [qw (
-               ***/
                first/
                first/second/
                first/second/third/
@@ -101,14 +97,3 @@ is_deeply [sort @files],
                three.empty
                two.empty
               )];
-
-# All these files exist but you have to escape at least one of the 
-# asterisks.
-@files = globstar '***.empty';
-is_deeply [sort @files], [];
-
-@files = globstar '***';
-is_deeply [sort @files], [];
-
-@files = globstar '***/empty';
-is_deeply [sort @files], [];
