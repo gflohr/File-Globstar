@@ -37,6 +37,9 @@ my %module_build_args = (
   },
   "test_requires" => {
     "Cwd" => 0,
+    "File::Spec" => 0,
+    "File::Temp" => 0,
+    "Git" => 0,
     "Test::More" => 0
   }
 );
@@ -44,6 +47,9 @@ my %module_build_args = (
 
 my %fallback_build_requires = (
   "Cwd" => 0,
+  "File::Spec" => 0,
+  "File::Temp" => 0,
+  "Git" => 0,
   "Module::Build" => "0.28",
   "Test::More" => 0
 );

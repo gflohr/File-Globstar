@@ -33,6 +33,9 @@ my %WriteMakefileArgs = (
   },
   "TEST_REQUIRES" => {
     "Cwd" => 0,
+    "File::Spec" => 0,
+    "File::Temp" => 0,
+    "Git" => 0,
     "Test::More" => 0
   },
   "VERSION" => "0.1",
@@ -47,6 +50,9 @@ my %FallbackPrereqs = (
   "Exporter" => 0,
   "File::Find" => 0,
   "File::Glob" => 0,
+  "File::Spec" => 0,
+  "File::Temp" => 0,
+  "Git" => 0,
   "IO::Handle" => 0,
   "Locale::TextDomain" => 0,
   "Module::Build" => "0.28",
