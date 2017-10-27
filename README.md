@@ -48,7 +48,7 @@ use File::Globstar qw(globstar fnmatchstar);
 
 print "Match!\n" if fnmatchstar '*.pl', 'hello.pl';
 print "Case-insensitive match!\n" 
-    if fnmatchstar '*.pl', 'Makefile.PL', 1;
+    if fnmatchstar '*.pl', 'Makefile.PL', ignoreCase => 1;
 
 $re = File::Globstar::translatestar('**/*.css');
 

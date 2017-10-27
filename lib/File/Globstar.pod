@@ -14,7 +14,7 @@ File::Globstar - Globbing With Double Asterisk Expansion
 
     print "Match!\n" if fnmatchstar '*.pl', 'hello.pl';
     print "Case-insensitive match!\n" 
-        if fnmatchstar '*.pl', 'Makefile.PL', 1;
+        if fnmatchstar '*.pl', 'Makefile.PL', ignoreCase => 1;
     
     $re = File::Globstar::translatestar('**/*.css');
 
@@ -54,11 +54,14 @@ the backend for the standard Perl B<glob> operator <HANDLE>.
 
 Currently, only the (forward!) slash is accepted as a path separator!
 
-=item B<fnmatchstar PATTERN, STRING[, IGNORE_CASE]>
+=item B<fnmatchstar PATTERN, STRING[, OPTIONS]>
 
 Returns 1 if B<STRING> matches B<PATTERN>, false otherwise.  If a Perl truthy
 value is passed as the optional third argument, case is ignored for the
 match.
+
+B<OPTIONS> is an optional hash of named arguments.  The only
+supported option is "ignoreCase" at the moment.
 
 Invalid B<PATTERN>s never match.
 
@@ -133,10 +136,13 @@ are currently not supported and their usage throws an exception.
 
 =back
 
-=item B<translatestar PATTERN[, IGNORE_CASE]>
+=item B<translatestar PATTERN[, OPTIONS]>
 
 Compiles B<PATTERN> into a Perl regular expression or throws an exception in
 case of failure.  This function is used internally by B<fnmatchstar()>.
+
+B<OPTIONS> is an optional hash of named arguments.  The only
+supported option is "ignoreCase" at the moment.
 
 =back
 

@@ -32,4 +32,6 @@ $libdir =~ s{/[^/]+$}{/gitlib};
 
 unshift @INC, $libdir;
 
+$ENV{FILE_GLOBSTAR_GIT_CHECK_IGNORE} = 1;
+
 require "t/listmatch-xmode.t";

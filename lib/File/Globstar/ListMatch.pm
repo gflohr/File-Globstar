@@ -133,7 +133,8 @@ sub _readArray {
         $blessing |= RE_FULL_MATCH if $line =~ m{/};
         $line =~ s{^/}{};
 
-        my $transpiled = eval { translatestar $line, $ignore_case };
+        my $transpiled = eval { translatestar $line, 
+                                ignoreCase => $ignore_case };
         if ($@) {
             $transpiled = quotemeta $line;
             if ($ignore_case) {

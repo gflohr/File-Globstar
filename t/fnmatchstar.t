@@ -60,7 +60,7 @@ foreach my $test (@tests) {
    }
 }
 
-ok fnmatchstar 'foobar', 'fOobAr', 1;
-ok !fnmatchstar 'foobar', 'fOobAr', 0;
+ok fnmatchstar 'foobar', 'fOobAr', ignoreCase => 1;
+ok !fnmatchstar 'foobar', 'fOobAr', ignoreCase => 0;
 
 done_testing(2 + scalar @tests);

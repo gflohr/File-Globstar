@@ -19,7 +19,7 @@ use base 'Exporter';
 use vars qw(@EXPORT_OK);
 @EXPORT_OK = qw(globstar fnmatchstar translatestar);
 
-sub _globstar($$;$);
+sub _globstar;
 
 sub empty($) {
     my ($what) = @_;
@@ -171,7 +171,7 @@ sub _globstar($$;$) {
     return bsd_glob $current, $flags;
 }
 
-sub globstar($;$) {
+sub globstar {
     my ($pattern, $flags) = @_;
 
     # The double asterisk can only be used in place of a directory.
@@ -204,8 +204,8 @@ sub _transpile_range($) {
     return "[$range]";
 }
 
-sub translatestar($;$) {
-    my ($pattern, $ignore_case) = @_;
+sub translatestar {
+    my ($pattern, %options) = @_;
 
     $pattern =~ s
                 {
@@ -264,15 +264,15 @@ sub translatestar($;$) {
                     $translated;
                 }gsex;
 
-    return $ignore_case ? qr/^$pattern$/i : qr/^$pattern$/;
+    return $options{ignoreCase} ? qr/^$pattern$/i : qr/^$pattern$/;
 }
 
-sub fnmatchstar($$;$) {
-    my ($pattern, $string, $ignore_case) = @_;
+sub fnmatchstar {
+    my ($pattern, $string, %options) = @_;
 
-    my $transpiled = eval { translatestar $pattern, $ignore_case };
+    my $transpiled = eval { translatestar $pattern, %options };
     if ($@) {
-        if ($ignore_case) {
+        if ($options{ignoreCase}) {
             lc $pattern eq lc $string or return;
         } else {
             $pattern eq $string or return;

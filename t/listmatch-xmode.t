@@ -30,14 +30,18 @@ $matcher = File::Globstar::ListMatch->new(\$input);
 ok $matcher->match('hello.pl'), 'full path match';
 ok !$matcher->match('path/to/hello.pl'), 'match in subdirectory';
 
-$input = <<EOF;
+SKIP: {
+    skip "unclear git behavior", 3 if $ENV{FILE_GLOBSTAR_GIT_CHECK_IGNORE};
+
+    $input = <<EOF;
 *.o
 !o.o
 EOF
-$matcher = File::Globstar::ListMatch->new(\$input);
-ok $matcher->match('path/to/compiled.o'), 'wildcard match';
-ok !$matcher->match('o.o'), 'negated match';
-ok !$matcher->match('path/to/o.o'), 'negated match in subdirectory';
+    $matcher = File::Globstar::ListMatch->new(\$input);
+    ok $matcher->match('path/to/compiled.o'), 'wildcard match';
+    ok !$matcher->match('o.o'), 'negated match';
+    ok !$matcher->match('path/to/o.o'), 'negated match in subdirectory';
+}
 
 $input = <<EOF;
 FooBar
