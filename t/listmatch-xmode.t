@@ -43,13 +43,16 @@ EOF
     ok !$matcher->match('path/to/o.o'), 'negated match in subdirectory';
 }
 
-$input = <<EOF;
+SKIP: {
+    skip "cannot test ignore case with real git", 3 if $ENV{FILE_GLOBSTAR_GIT_CHECK_IGNORE};
+    $input = <<EOF;
 FooBar
 EOF
-$matcher = File::Globstar::ListMatch->new(\$input, ignoreCase => 1);
-ok $matcher->match('FooBar'), 'ignoreCase exact';
-ok $matcher->match('foobar'), 'ignoreCase lower';
-ok $matcher->match('FOOBAR'), 'ignoreCase upper';
+    $matcher = File::Globstar::ListMatch->new(\$input, ignoreCase => 1);
+    ok $matcher->match('FooBar'), 'ignoreCase exact';
+    ok $matcher->match('foobar'), 'ignoreCase lower';
+    ok $matcher->match('FOOBAR'), 'ignoreCase upper';
+}
 
 $input = <<EOF;
 src
