@@ -273,6 +273,14 @@ useful probably only for testing.
 
 =back
 
+=head1 BUGS AND CAVEATES
+
+The module interprets backslashes only for escaping.  It does not assume any
+path separator semantics for them.  This should normally not be a problem.
+
+Git ignores all hidden files by default.  If you want the same behavior for
+B<File::Globstar::ListMatch>, put a ".*" in front of the patterns.
+
 =head1 COPYRIGHT
 
 Copyright (C) 2016-2017 Guido Flohr <guido.flohr@cantanea.com>,
