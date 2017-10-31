@@ -36,4 +36,5 @@ t/listmatch-imode.t
 t/listmatch-input.t
 t/listmatch-xmode.t
 t/patterns
+t/quotestar.t
 t/release-cpan-changes.t
