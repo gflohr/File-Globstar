@@ -17,7 +17,7 @@ use File::Find;
 
 use base 'Exporter';
 use vars qw(@EXPORT_OK);
-@EXPORT_OK = qw(globstar fnmatchstar translatestar);
+@EXPORT_OK = qw(globstar fnmatchstar translatestar quotestar);
 
 sub _globstar;
 
@@ -182,6 +182,15 @@ sub globstar {
     }
 
     return _globstar $pattern, '', $flags;
+}
+
+sub quotestar {
+    my ($string, $listmatch) = @_;
+
+    $string =~ s/([\\\[\]*?])/\\$1/g;
+    $string =~ s/^!/\\!/ if $listmatch;
+    
+    return $string;
 }
 
 sub _transpile_range($) {

@@ -18,6 +18,8 @@ File::Globstar - Globbing With Double Asterisk Expansion
     
     $re = File::Globstar::translatestar('**/*.css');
 
+    $safe_pattern = quotestar $config_srcdir;
+
 =head1 DESCRIPTION
 
 Shortcut: If you want to implement file inclusion or exclusion in the style
@@ -143,6 +145,25 @@ case of failure.  This function is used internally by B<fnmatchstar()>.
 
 B<OPTIONS> is an optional hash of named arguments.  The only
 supported option is "ignoreCase" at the moment.
+
+=item B<quotestar STRING[, NEGATABLE]>
+
+Escapes all characters special to globstar patterns.  This are:
+
+=over 8
+
+=item B<\\> the backslash
+
+=item B<*> the asterisk/star
+
+=item B<[> the opening square bracket
+
+=item B<]> the closing square bracket (actually unneeded but ...)
+
+=back
+
+If the optional argument B<NEGATABLE> is truthy, a leading exclamation mark
+will also be backslash-escaped.
 
 =back
 
