@@ -17,7 +17,12 @@ use File::Find;
 
 use base 'Exporter';
 use vars qw(@EXPORT_OK);
-@EXPORT_OK = qw(globstar fnmatchstar translatestar quotestar);
+@EXPORT_OK = qw(globstar fnmatchstar translatestar quotestar pnmatchstar);
+
+use constant RE_NONE => 0x0;
+use constant RE_NEGATED => 0x1;
+use constant RE_FULL_MATCH => 0x2;
+use constant RE_DIRECTORY => 0x4;
 
 sub _globstar;
 
@@ -216,6 +221,15 @@ sub _transpile_range($) {
 sub translatestar {
     my ($pattern, %options) = @_;
 
+    my $blessing = RE_NONE;
+
+    if ($options{pathMode}) {
+        $blessing |= RE_NEGATED if $pattern =~ s/^!//;
+        $blessing |= RE_DIRECTORY if $pattern =~ s{/$}{};
+        $blessing |= RE_FULL_MATCH if $pattern =~ m{/};
+        $pattern =~ s{^/}{};
+    }
+
     $pattern =~ s
                 {
                     (.*?)               # Anything, followed by ...
@@ -273,7 +287,9 @@ sub translatestar {
                     $translated;
                 }gsex;
 
-    return $options{ignoreCase} ? qr/^$pattern$/i : qr/^$pattern$/;
+    my $re = $options{ignoreCase} ? qr/^$pattern$/i : qr/^$pattern$/;
+
+    bless $re, $blessing;
 }
 
 sub fnmatchstar {
@@ -293,6 +309,25 @@ sub fnmatchstar {
     $string =~ $transpiled or return;
 
     return 1;
+}
+
+sub pnmatchstar {
+    my ($pattern, $string, %options) = @_;
+
+    $options{isDirectory} = 1 if $string =~ s{/$}{};
+
+    $pattern = translatestar $pattern, %options, pathMode => 1
+        unless ref $pattern && 'REGEXP' eq reftype $pattern;
+
+    my $flags = ref $pattern;
+    $string =~ s{.*/}{} if $flags & RE_FULL_MATCH;
+
+    my $match = $string =~ $pattern;
+    $match = !$match if $flags & RE_NEGATED;
+    
+    return if !$match;
+
+    return 1;    
 }
 
 1;

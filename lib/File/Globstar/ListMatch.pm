@@ -136,10 +136,15 @@ sub _readArray {
         # This causes a warning in git.  We simply ignore it.
         next if !length $line;
 
-        $line = '' if $@;
-        
         my $transpiled = eval { translatestar $line, 
                                 ignoreCase => $ignore_case };
+
+        # Why a slash? When matching, we discard a trailing slash from the
+        # string to match.  The regex '/$' can therefore never match.  And the
+        # leading caret is there in order to save Perl at least reading the
+        # string to the end.
+        $line = '^/$' if $@;
+        
         if ($@) {
             $transpiled = quotemeta $line;
             if ($ignore_case) {

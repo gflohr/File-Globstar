@@ -9,6 +9,13 @@ See [File::Globstar](https://github.com/gflohr/File-Globstar/blob/master/lib/Fil
 
 The library also contains [File::Globstar::ListMatch](https://github.com/gflohr/File-Globstar/blob/master/lib/File/Globstar/ListMatch.pod), a module that implements matching against lists of patterns in the style of [gitignore](https://git-scm.com/docs/gitignore).
 
+##
+
+The distribution can be viewed on:
+
+- http://cpan.org/~guido/File-Globstar/
+- https://github.com/gflohr/File-Globstar/
+
 ## Installation
 
 Via CPAN:
