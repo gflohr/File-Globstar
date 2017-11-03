@@ -11,6 +11,7 @@ package File::Globstar;
 
 use strict;
 
+use Locale::TextDomain qw(File-Globstar);
 use File::Glob qw(bsd_glob);
 use Scalar::Util qw(reftype);
 use File::Find;
@@ -25,6 +26,7 @@ use constant RE_FULL_MATCH => 0x2;
 use constant RE_DIRECTORY => 0x4;
 
 sub _globstar;
+sub pnmatchstar;
 
 sub empty($) {
     my ($what) = @_;
@@ -221,6 +223,9 @@ sub _transpile_range($) {
 sub translatestar {
     my ($pattern, %options) = @_;
 
+    die __x("invalid pattern '{pattern}'\n", pattern => $pattern)
+        if $pattern =~ m{^/+$};
+
     my $blessing = RE_NONE;
 
     if ($options{pathMode}) {
@@ -229,6 +234,9 @@ sub translatestar {
         $blessing |= RE_FULL_MATCH if $pattern =~ m{/};
         $pattern =~ s{^/}{};
     }
+
+    # xgettext doesn't parse Perl code in regexes.
+    my $invalid_msg = __"invalid use of double asterisk";
 
     $pattern =~ s
                 {
@@ -280,7 +288,7 @@ sub translatestar {
                         $translated .= _transpile_range $2;
                     } elsif (length $2) {
                         if ($2 =~ /\*\*/) {
-                            die "invalid use of double asterisk";
+                            die $invalid_msg;
                         }
                         die "should not happen: $2"; 
                     }
@@ -296,15 +304,7 @@ sub fnmatchstar {
     my ($pattern, $string, %options) = @_;
 
     my $transpiled = eval { translatestar $pattern, %options };
-    if ($@) {
-        if ($options{ignoreCase}) {
-            lc $pattern eq lc $string or return;
-        } else {
-            $pattern eq $string or return;
-        }
-
-        return 1;
-    }
+    return if $@;
 
     $string =~ $transpiled or return;
 
@@ -316,18 +316,40 @@ sub pnmatchstar {
 
     $options{isDirectory} = 1 if $string =~ s{/$}{};
 
-    $pattern = translatestar $pattern, %options, pathMode => 1
-        unless ref $pattern && 'REGEXP' eq reftype $pattern;
+    my $full_path = $string;
+
+    # (ref $pattern) may be false here because it can be 0.
+    my $reftype = reftype $pattern;
+    unless (defined $reftype && 'REGEXP' eq $reftype) {
+        $pattern = eval { translatestar $pattern, %options, pathMode => 1 };
+        return if $@;
+    }
 
     my $flags = ref $pattern;
-    $string =~ s{.*/}{} if $flags & RE_FULL_MATCH;
+    $string =~ s{.*/}{} unless $flags & RE_FULL_MATCH;
 
     my $match = $string =~ $pattern;
-    $match = !$match if $flags & RE_NEGATED;
-    
-    return if !$match;
+    if ($flags & RE_DIRECTORY) {
+        undef $match if !$options{isDirectory};        
+    }
 
-    return 1;    
+    my $negated = $flags & RE_NEGATED;
+
+    if ($match) {
+        if ($negated) {
+            return;
+       } else {
+            return 1;
+        }
+    }
+
+    if ($full_path =~ s{/[^/]*$}{}) {
+        return pnmatchstar $pattern, $full_path, %options, isDirectory => 1;
+    }
+
+    return 1 if $negated;
+    
+    return;
 }
 
 1;

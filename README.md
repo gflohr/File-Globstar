@@ -46,6 +46,8 @@ $ make install
 
 ## Usage
 
+See [File::Globstar](lib/File/Globstar.pod) and [File::Globstar::ListMatch](lib/File/Globstar/ListMatch.pod).
+
 ```perl
 use File::Globstar qw(globstar fnmatchstar);
 
