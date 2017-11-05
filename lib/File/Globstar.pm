@@ -13,7 +13,7 @@ use strict;
 
 use Locale::TextDomain qw(File-Globstar);
 use File::Glob qw(bsd_glob);
-use Scalar::Util 1.49 qw(reftype);
+use Scalar::Util 1.21 qw(reftype);
 use File::Find;
 
 use base 'Exporter';
@@ -24,6 +24,14 @@ use constant RE_NONE => 0x0;
 use constant RE_NEGATED => 0x1;
 use constant RE_FULL_MATCH => 0x2;
 use constant RE_DIRECTORY => 0x4;
+
+# Remember what Scalar::Util::reftype() returns for a compiled regular
+# expression.  It should normally be 'REGEXP' but with Perl 5.10 (or
+# maybe older) this seems to be an empty string.  In this case, the
+# check in pnmatchstar() whether it received a compiled regex will be
+# rather weak ...
+my $test_re = qr/./;
+my $regex_type = reftype $test_re;
 
 sub _globstar;
 sub pnmatchstar;
@@ -318,9 +326,10 @@ sub pnmatchstar {
 
     my $full_path = $string;
 
+    # Check whether the regular expression is compiled.  
     # (ref $pattern) may be false here because it can be 0.
     my $reftype = reftype $pattern;
-    unless (defined $reftype && 'REGEXP' eq $reftype) {
+    unless (defined $reftype && $regex_type eq $reftype) {
         $pattern = eval { translatestar $pattern, %options, pathMode => 1 };
         return if $@;
     }

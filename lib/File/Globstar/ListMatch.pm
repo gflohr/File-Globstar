@@ -12,7 +12,7 @@ package File::Globstar::ListMatch;
 use strict;
 
 use Locale::TextDomain qw(File-Globstar);
-use Scalar::Util 1.49 qw(reftype);
+use Scalar::Util 1.21 qw(reftype);
 use IO::Handle;
 
 use File::Globstar qw(translatestar pnmatchstar);
