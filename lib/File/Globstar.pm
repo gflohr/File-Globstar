@@ -13,7 +13,7 @@ use strict;
 
 use Locale::TextDomain qw(File-Globstar);
 use File::Glob qw(bsd_glob);
-use Scalar::Util '1.49' qw(reftype);
+use Scalar::Util 1.49 qw(reftype);
 use File::Find;
 
 use base 'Exporter';
