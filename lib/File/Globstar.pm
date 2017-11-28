@@ -285,7 +285,7 @@ sub translatestar {
                     } elsif ('**' eq $2) {
                         $translated .= '.*';
                     } elsif ('/**' eq $2) {
-                        $translated .= '/.*';
+                        $translated .= '(?:/.*)?';
                     } elsif ('.' eq $2) {
                         $translated .= '\\.';
                     } elsif ('*' eq $2) {
