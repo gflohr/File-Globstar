@@ -1,6 +1,11 @@
 Revision history for Perl extension File-Globstar.
 
-{{$NEXT}} 
+{{$NEXT}}
+    - "/**" is not truly optional
+    - trailing "dir/**" not matches "dir/inside" and "dir/" and "dir"; this
+      is intentionally different from git's behavior
+
+0.3  2017-11- 08
     - do not use "package" with version (breaks older Perls)
     - run author tests on Travis CI
 
