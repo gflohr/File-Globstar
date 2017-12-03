@@ -40,9 +40,7 @@ my %module_build_args = (
     "File::Spec" => 0,
     "File::Temp" => 0,
     "Git" => 0,
-    "Pod::Coverage::TrustPod" => 0,
-    "Test::More" => 0,
-    "Test::Perl::Critic" => 0
+    "Test::More" => 0
   }
 );
 
@@ -53,9 +51,7 @@ my %fallback_build_requires = (
   "File::Temp" => 0,
   "Git" => 0,
   "Module::Build" => "0.28",
-  "Pod::Coverage::TrustPod" => 0,
-  "Test::More" => 0,
-  "Test::Perl::Critic" => 0
+  "Test::More" => 0
 );
 
 
