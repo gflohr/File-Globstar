@@ -6,3 +6,5 @@ perl:
   - "5.10"
 env:
   - AUTHOR_TESTING=1
+before_install:
+  - cpanm Pod::Coverage::TrustPod Test::Perl::Critic
