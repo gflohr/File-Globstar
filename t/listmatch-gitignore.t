@@ -1,4 +1,4 @@
-# Copyright (C) 2016-2017 Guido Flohr <guido.flohr@cantanea.com>, 
+# Copyright (C) 2016-2017 Guido Flohr <guido.flohr@cantanea.com>,
 # all rights reserved.
 
 # This file is distributed under the same terms and conditions as
@@ -34,4 +34,5 @@ unshift @INC, $libdir;
 
 $ENV{FILE_GLOBSTAR_GIT_CHECK_IGNORE} = 1;
 
+use lib q/./;
 require "t/listmatch-xmode.t";
