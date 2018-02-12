@@ -81,7 +81,7 @@ sub __match {
 
 sub match {
     my ($self) = shift @_;
-
+    
     return $self->__match(undef, @_);
 }
 
@@ -91,7 +91,7 @@ sub matchExclude {
 
 sub matchInclude {
     my ($self) = shift @_;
-
+    
     return $self->__match(1, @_);
 }
 
@@ -107,7 +107,7 @@ sub _readArray {
 
     my $ignore_case = $self->{__ignore_case};
     foreach my $line (@$lines) {
-        my $transpiled = eval { translatestar $line,
+        my $transpiled = eval { translatestar $line, 
                                 ignoreCase => $ignore_case,
                                 pathMode => 1 };
 
@@ -162,7 +162,7 @@ sub _readFileHandle {
 
     die __x("Error reading '{filename}': {error}!\n",
             filename => $filename, error => $!) if $fh->error;
-
+    
     return $self->_readString(join '', @lines);
 }
 
@@ -175,7 +175,7 @@ sub _readFile {
     open my $fh, '<', $filename
         or die __x("Error reading '{filename}': {error}!\n",
                    filename => $filename, error => $!);
-
+    
     return $self->_readFileHandle($fh);
 }
 
