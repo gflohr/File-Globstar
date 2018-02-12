@@ -1,6 +1,7 @@
 Revision history for Perl extension File-Globstar.
 
 {{$NEXT}}
+    - fixed build on Windows (https://github.com/gflohr/File-Globstar/pull/2)
 
 0.5  2017-12-03
     - removed Pod::Coverage::TrustPod and Test::Perl::Critic as test
