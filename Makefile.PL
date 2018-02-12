@@ -36,7 +36,8 @@ my %WriteMakefileArgs = (
     "File::Spec" => 0,
     "File::Temp" => 0,
     "Git" => 0,
-    "Test::More" => 0
+    "Test::More" => 0,
+    "lib" => 0
   },
   "VERSION" => "0.5",
   "test" => {
@@ -60,6 +61,7 @@ my %FallbackPrereqs = (
   "Test::More" => 0,
   "base" => 0,
   "constant" => 0,
+  "lib" => 0,
   "strict" => 0,
   "vars" => 0
 );

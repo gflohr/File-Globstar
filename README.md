@@ -58,6 +58,6 @@ Please report bugs at
 
 ## Copyright
 
-Copyright (C) 2016-2017, Guido Flohr, <guido.flohr@cantanea.com>,
+Copyright (C) 2016-2018, Guido Flohr, <guido.flohr@cantanea.com>,
 all rights reserved.
 
