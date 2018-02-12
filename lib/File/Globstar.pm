@@ -124,7 +124,7 @@ sub _globstar($$;$) {
     }
 
     my $current = $directory;
- 
+
     # This is a quotemeta() that does not escape the slash and the
     # colon.  Escaped slashes confuse bsd_glob() and escaping colons
     # may make a full port to Windows harder.
@@ -204,7 +204,7 @@ sub quotestar {
 
     $string =~ s/([\\\[\]*?])/\\$1/g;
     $string =~ s/^!/\\!/ if $listmatch;
-    
+
     return $string;
 }
 
@@ -220,11 +220,11 @@ sub _transpile_range($) {
     # Backslashes escape inside Perl ranges but not in ours.  Escape them:
     $range =~ s/\\/\\\\/g;
 
-    # Quote dots and equal sign to prevent Perl from interpreting 
+    # Quote dots and equal sign to prevent Perl from interpreting
     # equivalence and collating classes.
     $range =~ s/\./\\\./g;
     $range =~ s/\=/\\\=/g;
-    
+
     return "[$range]";
 }
 
@@ -249,7 +249,7 @@ sub translatestar {
     $pattern =~ s
                 {
                     (.*?)               # Anything, followed by ...
-                    (  
+                    (
                        \\.              # escaped character
                     |                   # or
                        \A\*\*(?=/)      # leading **/
@@ -298,7 +298,7 @@ sub translatestar {
                         if ($2 =~ /\*\*/) {
                             die $invalid_msg;
                         }
-                        die "should not happen: $2"; 
+                        die "should not happen: $2";
                     }
                     $translated;
                 }gsex;
@@ -326,7 +326,7 @@ sub pnmatchstar {
 
     my $full_path = $string;
 
-    # Check whether the regular expression is compiled.  
+    # Check whether the regular expression is compiled.
     # (ref $pattern) may be false here because it can be 0.
     my $reftype = reftype $pattern;
     unless (defined $reftype && $regex_type eq $reftype) {
@@ -339,7 +339,7 @@ sub pnmatchstar {
 
     my $match = $string =~ $pattern;
     if ($flags & RE_DIRECTORY) {
-        undef $match if !$options{isDirectory};        
+        undef $match if !$options{isDirectory};
     }
 
     my $negated = $flags & RE_NEGATED;
@@ -357,7 +357,7 @@ sub pnmatchstar {
     }
 
     return 1 if $negated;
-    
+
     return;
 }
 
