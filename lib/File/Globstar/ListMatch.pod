@@ -9,16 +9,16 @@ File::Globstar::ListMatch - Match File Names Against List Of Patterns
     use File::Globstar::ListMatch;
 
     # Parse from file.
-    $matcher = File::Globstar::ListMatch('.gitignore', 
-                                         ignoreCase => 1,
-                                         isExclude => 1);
+    $matcher = File::Globstar::ListMatch->new('.gitignore', 
+                                              ignoreCase => 1,
+                                              isExclude => 1);
 
     # Parse from file handle.
-    $matcher = File::Globstar::ListMatch(STDIN, ignoreCase => 0);
+    $matcher = File::Globstar::ListMatch->new(STDIN, ignoreCase => 0);
 
     # Parse list of patterns.  Comments and blank lines are not
     # stripped!
-    $matcher = File::Globstar::ListMatch([
+    $matcher = File::Globstar::ListMatch->new([
         'src/**/*.o',
         '.*',
         '!.gitignore'
@@ -33,7 +33,7 @@ File::Globstar::ListMatch - Match File Names Against List Of Patterns
     # But not this one.
     '.gitignore'
     EOF
-    $matcher = File::Globstar::ListMatch(\$pattern);
+    $matcher = File::Globstar::ListMatch->new(\$pattern);
 
     $filename = 'path/to/hello.o';
     if ($matcher->match($filename)) {
