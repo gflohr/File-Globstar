@@ -8,7 +8,7 @@ BEGIN {
 }
 
 
-use strict;
+use common::sense;
 use warnings;
 
 use Test::Perl::Critic (-profile => "perlcritic.rc") x!! -e "perlcritic.rc";

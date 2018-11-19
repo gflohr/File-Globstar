@@ -9,7 +9,7 @@
 
 package File::Globstar::ListMatch;
 
-use strict;
+use common::sense;
 
 use Locale::TextDomain qw(File-Globstar);
 use Scalar::Util 1.21 qw(reftype);
