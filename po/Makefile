@@ -85,4 +85,3 @@ update-po:
 
 .po.gmo:
 	$(MSGFMT) --check --statistics --verbose -o $@ $<
-

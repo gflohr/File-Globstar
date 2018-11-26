@@ -60,4 +60,3 @@ Please report bugs at
 
 Copyright (C) 2016-2018, Guido Flohr, <guido.flohr@cantanea.com>,
 all rights reserved.
-
