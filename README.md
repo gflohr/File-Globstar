@@ -49,7 +49,7 @@ See [File::Globstar](lib/File/Globstar.pod) and [File::Globstar::ListMatch](lib/
 
 ## Contributing
 
-Translate 
+Translate
 
 ## Bugs
 
