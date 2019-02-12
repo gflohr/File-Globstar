@@ -49,7 +49,7 @@ See [File::Globstar](lib/File/Globstar.pod) and [File::Globstar::ListMatch](lib/
 
 ## Contributing
 
-Translate 
+Translate
 
 ## Bugs
 
@@ -60,4 +60,3 @@ Please report bugs at
 
 Copyright (C) 2016-2018, Guido Flohr, <guido.flohr@cantanea.com>,
 all rights reserved.
-
