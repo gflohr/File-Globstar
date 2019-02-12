@@ -24,8 +24,8 @@ environment:
   matrix:
     - Perl_VERSION: "latest"
       COVERAGE: "Codecov Coveralls" ## note: case sensitive!
-      AUTHOR_TESTING: 1
-      RELEASE_TESTING: 1
+    #   AUTHOR_TESTING: 1
+    #   RELEASE_TESTING: 1
     - Perl_VERSION: "5.28"
     - Perl_VERSION: "5.26"
     - Perl_VERSION: "5.24"
