@@ -128,7 +128,7 @@ sub _globstar($$;$) {
     # This is a quotemeta() that does not escape the slash and the
     # colon.  Escaped slashes confuse bsd_glob() and escaping colons
     # may make a full port to Windows harder.
-    $current =~ s{([\x00-\x2e\x3b-\x40\x5b-\x60\x7b-\x7f])}{\\$1}g;
+    $current =~ s{([\x00-\x2e\x3b-\x40\x5b-\x5e\x60\x7b-\x7f])}{\\$1}g;
     if ($directory ne '' && '/' ne substr $directory, -1, 1) {
         $current .= '/';
     }
