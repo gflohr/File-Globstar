@@ -44,26 +44,6 @@ sub empty($) {
     return 1;
 }
 
-sub _find_files($) {
-    my ($directory) = @_;
-
-    my $empty = empty $directory;
-    $directory = '.' if $empty;
-
-    my @hits;
-    File::Find::find sub {
-        return if -d $_;
-        return if '.' eq substr $_, 0, 1;
-        push @hits, $File::Find::name;
-    }, $directory;
-
-    if ($empty) {
-        @hits = map { substr $_, 2 } @hits;
-    }
-
-    return @hits;
-}
-
 sub _find_directories($) {
     my ($directory) = @_;
 
