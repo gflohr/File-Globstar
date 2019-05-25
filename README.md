@@ -1,6 +1,6 @@
-[![Price](https://img.shields.io/badge/price-FREE-0098f7.svg)](https://github.com/gflohr/qgoda/blob/master/LICENSE)
-[![Travis (.org)](https://img.shields.io/travis/gflohr/qgoda.svg)](https://travis-ci.org/gflohr/qgoda)
-[![Coverage Status](https://coveralls.io/repos/github/gflohr/qgoda/badge.svg?branch=master)](https://coveralls.io/github/gflohr/qgoda?branch=master)
+[![Price](https://img.shields.io/badge/price-FREE-0098f7.svg)](https://github.com/gflohr/File-Globstar/blob/master/LICENSE)
+[![Travis (.org)](https://img.shields.io/travis/gflohr/File-Globstar.svg)](https://travis-ci.org/gflohr/File-Globstar)
+[![Coverage Status](https://coveralls.io/repos/github/gflohr/File-Globstar/badge.svg?branch=master)](https://coveralls.io/github/gflohr/File-Globstar?branch=master)
 
 # File-Globstar
 
