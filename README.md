@@ -1,3 +1,7 @@
+[![Price](https://img.shields.io/badge/price-FREE-0098f7.svg)](https://github.com/gflohr/qgoda/blob/master/LICENSE)
+[![Travis (.org)](https://img.shields.io/travis/gflohr/qgoda.svg)](https://travis-ci.org/gflohr/qgoda)
+[![Coverage Status](https://coveralls.io/repos/github/gflohr/qgoda/badge.svg?branch=master)](https://coveralls.io/github/gflohr/qgoda?branch=master)
+
 # File-Globstar
 
 This library implements globbing with support for "**" in Perl.
