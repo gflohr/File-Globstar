@@ -10,10 +10,10 @@ use Cwd;
 use File::Spec;
 
 BEGIN {
-  unless ($ENV{AUTHOR_TESTING}) {
-    print qq{1..0 # SKIP these tests are for testing by the author\n};
-    exit
-  }
+	unless ($ENV{AUTHOR_TESTING}) {
+		print qq{1..0 # SKIP these tests are for testing by the author\n};
+	exit
+	}
 }
 
 # We run all the tests from listmatch-xmode.t but with a
