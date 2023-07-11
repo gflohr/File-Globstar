@@ -17,3 +17,4 @@
 /README.pod
 /po/**/*.gmo
 /po/**/*.mo
+/cover_db
