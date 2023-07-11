@@ -9,7 +9,7 @@
 
 package File::Globstar::ListMatch;
 
-use common::sense;
+use strict;
 
 use File::Temp;
 use Git;

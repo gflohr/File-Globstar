@@ -9,7 +9,7 @@
 
 package File::Globstar;
 
-use common::sense;
+use strict;
 
 use Locale::TextDomain qw(File-Globstar);
 use File::Glob qw(bsd_glob);

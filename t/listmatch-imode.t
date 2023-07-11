@@ -4,7 +4,7 @@
 # This file is distributed under the same terms and conditions as
 # Perl itself.
 
-use common::sense;
+use strict;
 
 use Test::More tests => 31;
 
