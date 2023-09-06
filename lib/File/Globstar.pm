@@ -260,25 +260,27 @@ sub translatestar {
 					)?
 				}{
 					my $translated = quotemeta $1;
-					if ('\\' eq substr $2, 0, 1) {
-						$translated .= quotemeta substr $2, 1, 1;
-					} elsif ('**' eq $2) {
-						$translated .= '.*';
-					} elsif ('/**' eq $2) {
-						$translated .= '(?:/.*)?';
-					} elsif ('.' eq $2) {
-						$translated .= '\\.';
-					} elsif ('*' eq $2) {
-						$translated .= '[^/]*';
-					} elsif ('?' eq $2) {
-						$translated .= '[^/]';
-					} elsif ('[' eq substr $2, 0, 1) {
-						$translated .= _transpile_range $2;
-					} elsif (length $2) {
-						if ($2 =~ /\*\*/) {
-							die $invalid_msg;
+					if (defined $2 && length $2) {
+						if ('\\' eq substr $2, 0, 1) {
+							$translated .= quotemeta substr $2, 1, 1;
+						} elsif ('**' eq $2) {
+							$translated .= '.*';
+						} elsif ('/**' eq $2) {
+							$translated .= '(?:/.*)?';
+						} elsif ('.' eq $2) {
+							$translated .= '\\.';
+						} elsif ('*' eq $2) {
+							$translated .= '[^/]*';
+						} elsif ('?' eq $2) {
+							$translated .= '[^/]';
+						} elsif ('[' eq substr $2, 0, 1) {
+							$translated .= _transpile_range $2;
+						} else {
+							if ($2 =~ /\*\*/) {
+								die $invalid_msg;
+							}
+							die "should not happen: $2";
 						}
-						die "should not happen: $2";
 					}
 					$translated;
 				}gsex;
