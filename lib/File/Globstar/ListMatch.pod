@@ -10,8 +10,7 @@ File::Globstar::ListMatch - Match File Names Against List Of Patterns
 
     # Parse from file.
     $matcher = File::Globstar::ListMatch->new('.gitignore',
-                                              ignoreCase => 1,
-                                              isExclude => 1);
+                                              ignoreCase => 1);
 
     # Parse from file handle.
     $matcher = File::Globstar::ListMatch->new(STDIN, ignoreCase => 0);
